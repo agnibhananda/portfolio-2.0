@@ -60,9 +60,58 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: '65ch',
+            color: 'inherit',
+            a: {
+              color: 'inherit',
+              textDecoration: 'none',
+              fontWeight: '500',
+            },
+            strong: {
+              fontWeight: '600',
+            },
+            h1: {
+              fontWeight: '300',
+              fontSize: '2.25em',
+            },
+            h2: {
+              fontWeight: '300',
+              fontSize: '1.875em',
+            },
+            h3: {
+              fontWeight: '300',
+              fontSize: '1.5em',
+            },
+            code: {
+              color: 'inherit',
+              padding: '0.2em 0.4em',
+              borderRadius: '0.25rem',
+              background: 'rgba(142, 150, 170, 0.14)',
+            },
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
+            },
+            pre: {
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '0.5rem',
+              padding: '1em',
+              color: 'inherit',
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+  ],
 }
 
 export default config

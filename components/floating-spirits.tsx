@@ -12,7 +12,6 @@ const spirits = [
   { src: "/scarecrow.png", alt: "Spirit 6" },
 ]
 
-// Helper function to generate random positions
 const generateRandomPositions = () => {
   return {
     x: [

@@ -1,50 +1,64 @@
-import fs from "fs"
-import path from "path"
-import matter from "gray-matter"
+import path from 'path'
+import fs from 'node:fs'
+import matter from 'gray-matter'
 
-const postsDirectory = path.join(process.cwd(), "content/blog")
+const POSTS_PATH = path.join(process.cwd(), 'content/blog')
 
-export function getAllPosts() {
-  const fileNames = fs.readdirSync(postsDirectory)
-  const allPostsData = fileNames
-    .filter((fileName) => fileName.endsWith(".mdx"))
+export type BlogPost = {
+  slug: string
+  title: string
+  date: string
+  content: string
+  excerpt: string
+  tags?: string[]
+}
+
+// This function should only be called from server components
+export async function getBlogPosts(): Promise<BlogPost[]> {
+  // Ensure the directory exists
+  if (!fs.existsSync(POSTS_PATH)) {
+    return []
+  }
+
+  const posts = fs
+    .readdirSync(POSTS_PATH)
+    .filter((path) => /\.mdx?$/.test(path))
     .map((fileName) => {
-      const slug = fileName.replace(/\.mdx$/, "")
-      const fullPath = path.join(postsDirectory, fileName)
-      const fileContents = fs.readFileSync(fullPath, "utf8")
-      const { data, content } = matter(fileContents)
-
-      const wordCount = content.split(/\s+/g).length
-      const readingTime = Math.ceil(wordCount / 200)
+      const source = fs.readFileSync(
+        path.join(POSTS_PATH, fileName),
+        'utf8'
+      )
+      const slug = fileName.replace(/\.mdx?$/, '')
+      const { data, content } = matter(source)
 
       return {
         slug,
-        title: data.title,
-        date: data.date,
-        excerpt: data.excerpt,
-        readingTime,
+        title: data.title ?? slug,
+        date: data.date ?? new Date().toISOString(),
         content,
+        excerpt: data.excerpt ?? '',
+        tags: data.tags ?? [],
       }
     })
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
-  return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1))
+  return posts
 }
 
-export async function getPostBySlug(slug: string) {
+// This function should only be called from server components
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
-    const fullPath = path.join(postsDirectory, `${slug}.mdx`)
+    const fullPath = path.join(POSTS_PATH, `${slug}.mdx`)
     const fileContents = fs.readFileSync(fullPath, "utf8")
     const { data, content } = matter(fileContents)
 
-    const wordCount = content.split(/\s+/g).length
-    const readingTime = Math.ceil(wordCount / 200)
-
     return {
       slug,
-      title: data.title,
-      date: data.date,
+      title: data.title ?? slug,
+      date: data.date ?? new Date().toISOString(),
       content,
-      readingTime,
+      excerpt: data.excerpt ?? '',
+      tags: data.tags ?? [],
     }
   } catch {
     return null
