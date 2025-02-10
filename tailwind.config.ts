@@ -14,6 +14,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         serif: ["var(--font-cormorant)", "serif"],
+        sans: ["var(--font-inter)", "sans-serif"],
       },
       colors: {
         cream: "hsl(var(--cream) / <alpha-value>)",

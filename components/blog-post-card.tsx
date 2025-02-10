@@ -20,32 +20,30 @@ export function BlogPostCard({ post, index }: BlogPostCardProps) {
         href={`/blog/${post.slug}`}
         className="block group"
       >
-        <article className="relative p-8 rounded-xl bg-white/50 backdrop-blur-sm border border-white/20 shadow-sm transition-all duration-300 hover:shadow-md hover:bg-white/60">
-          {/* Decorative gradient */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#e0b1cb]/0 via-[#e0b1cb]/5 to-[#e0b1cb]/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <article className="relative p-8 rounded-xl bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-sm transition-all duration-300 hover:shadow-md hover:bg-[#A4B7C9]/60 dark:hover:bg-[#3D4E6C]/60">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#B5CAD0]/0 via-[#B5CAD0]/5 dark:via-[#4A5C7B]/5 to-[#B5CAD0]/0 dark:to-[#4A5C7B]/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           
           <div className="relative">
-            <h2 className="text-2xl font-light text-[#2d5a88] group-hover:text-[#9b6b9e] transition-colors mb-2">
+            <h2 className="text-2xl font-light text-[#3D4E6C] dark:text-[#C5D1DC] group-hover:text-[#2D3C54] dark:group-hover:text-white transition-colors mb-2">
               {post.title}
             </h2>
-            <time className="text-sm text-[#4a6fa5]/60 mb-4 block">
+            <time className="text-sm text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60 mb-4 block">
               {new Date(post.date).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
               })}
             </time>
-            <p className="text-[#4a6fa5]/80 line-clamp-2">
+            <p className="text-[#3D4E6C]/80 dark:text-[#C5D1DC]/80 line-clamp-2">
               {post.excerpt}
             </p>
             
-            {/* Tags */}
             {post.tags && post.tags.length > 0 && (
               <div className="flex gap-2 mt-4">
                 {post.tags.map(tag => (
                   <span 
                     key={tag}
-                    className="px-2 py-1 text-xs rounded-full bg-[#e0b1cb]/10 text-[#9b6b9e]"
+                    className="px-2 py-1 text-xs rounded-full bg-[#B5CAD0]/30 dark:bg-[#4A5C7B]/30 text-[#3D4E6C] dark:text-[#C5D1DC] border border-[#C5D1DC]/30 dark:border-white/10"
                   >
                     {tag}
                   </span>

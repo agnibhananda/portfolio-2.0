@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { Cormorant_Garamond } from "next/font/google"
+import { Cormorant_Garamond, Inter } from "next/font/google"
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 import type React from "react" // Import React
 
@@ -7,6 +8,13 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ['300', '400', '500', '600', '700'],
   variable: "--font-cormorant",
+  display: "swap",
+})
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ['400', '500', '600'],
+  variable: "--font-inter",
   display: "swap",
 })
 
@@ -21,8 +29,17 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${cormorant.variable} font-serif bg-cream`}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${cormorant.variable} ${inter.variable}`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

@@ -134,7 +134,6 @@ export function GhibliElements() {
         )
       })}
 
-      {/* Additional decorative elements */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" />
       <div className="absolute inset-0">
         {[...Array(20)].map((_, i) => (
