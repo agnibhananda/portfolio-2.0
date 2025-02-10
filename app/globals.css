@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --cream: 36 33% 97%;
+    --sage: 150 15% 86%;
+    --dusty-rose: 4 25% 82%;
+    --slate: 215 25% 27%;
+    --gold: 35 40% 50%;
+
+    --background: var(--cream);
+    --foreground: var(--slate);
+
+    --card: var(--cream);
+    --card-foreground: var(--slate);
+
+    --popover: var(--cream);
+    --popover-foreground: var(--slate);
+
+    --primary: var(--slate);
+    --primary-foreground: var(--cream);
+
+    --secondary: var(--sage);
+    --secondary-foreground: var(--slate);
+
+    --muted: var(--sage);
+    --muted-foreground: var(--slate);
+
+    --accent: var(--dusty-rose);
+    --accent-foreground: var(--slate);
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: var(--cream);
+
+    --border: var(--slate);
+    --input: var(--slate);
+    --ring: var(--slate);
+
+    --radius: 0.5rem;
+  }
+}
+
+.decorative-border {
+  @apply relative;
+}
+
+.decorative-border::before,
+.decorative-border::after {
+  content: "✧";
+  @apply absolute text-gold opacity-80;
+}
+
+.decorative-border::before {
+  @apply -left-8;
+}
+
+.decorative-border::after {
+  @apply -right-8;
+}
+
