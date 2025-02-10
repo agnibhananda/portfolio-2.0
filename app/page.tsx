@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { AnimatedText } from "@/components/animated-text"
 import { FloatingSpirits } from "@/components/floating-spirits"
 import { InteractiveTree } from "@/components/interactive-tree"
+import { AnimatedBackground } from "@/components/animated-background"
 
 export default function Home() {
   const { scrollYProgress } = useScroll()
@@ -12,7 +13,8 @@ export default function Home() {
   const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.9])
 
   return (
-    <main className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#e9f5f9] via-[#f0f4f8] to-[#f7e8f6]">
+    <main className="min-h-screen relative overflow-hidden">
+      <AnimatedBackground />
       <FloatingSpirits />
       
       {/* Decorative Elements */}
@@ -65,7 +67,10 @@ export default function Home() {
       </nav>
 
       <motion.section style={{ opacity, scale }} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/bg.jpg')] bg-cover bg-fixed bg-center opacity-70 transition-all duration-500 hover:opacity-75" />
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-70 transition-all duration-500 hover:opacity-75"
+          style={{ backgroundImage: 'url("/bg.jpg")' }}
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-[#e9f5f9]/60 via-transparent to-[#f7e8f6]/70" />
         <div className="relative z-10 text-center space-y-8 max-w-3xl mx-auto px-4">
           <AnimatedText text="Agnibha Nanda" className="text-6xl md:text-8xl font-light text-[#2d5a88] drop-shadow-lg" />
@@ -75,7 +80,6 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            Studying Computer Science
           </motion.p>
           <motion.div
             className="flex justify-center gap-3"
@@ -106,7 +110,7 @@ export default function Home() {
 
       <motion.section
         id="about"
-        className="py-32 px-6 relative z-20 bg-gradient-to-r from-[#f7e8f6] via-[#f8f9fc] to-[#e9f5f9]"
+        className="py-32 px-6 relative z-20 bg-gradient-to-br from-[#f7e8f6]/90 via-[#f8f9fc]/80 to-[#e9f5f9]/90 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
@@ -119,12 +123,13 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
+          {/* Animated gradient orbs */}
           <motion.div 
-            className="absolute -top-20 -left-20 w-40 h-40 bg-[#e0b1cb]/10 rounded-full blur-3xl"
+            className="absolute -top-20 -left-20 w-96 h-96 bg-[#e0b1cb]/20 rounded-full blur-[100px]"
             animate={{
               scale: [1, 1.2, 1],
-              x: [0, 20, 0],
-              y: [0, -20, 0],
+              x: [0, 30, 0],
+              y: [0, -30, 0],
             }}
             transition={{
               duration: 8,
@@ -133,11 +138,11 @@ export default function Home() {
             }}
           />
           <motion.div 
-            className="absolute top-1/2 -right-20 w-60 h-60 bg-[#9f86c0]/10 rounded-full blur-3xl"
+            className="absolute top-1/2 -right-20 w-[500px] h-[500px] bg-[#9f86c0]/20 rounded-full blur-[120px]"
             animate={{
               scale: [1.2, 1, 1.2],
-              x: [-20, 0, -20],
-              y: [20, 0, 20],
+              x: [-30, 0, -30],
+              y: [30, 0, 30],
             }}
             transition={{
               duration: 10,
@@ -145,6 +150,34 @@ export default function Home() {
               ease: "easeInOut",
             }}
           />
+          <motion.div 
+            className="absolute -bottom-40 left-1/3 w-[600px] h-[600px] bg-[#be95c4]/20 rounded-full blur-[140px]"
+            animate={{
+              scale: [1, 1.3, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          
+          {/* Shimmer effect */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+            animate={{
+              x: ['-100%', '100%'],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+          
+          {/* Pattern overlay */}
+          <div className="absolute inset-0 bg-[url('/totoro-pattern.png')] bg-repeat opacity-[0.03]" />
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
@@ -208,19 +241,95 @@ export default function Home() {
 
       <motion.section
         id="projects"
-        className="py-32 px-6 bg-gradient-to-br from-[#f7e8f6] via-[#f8f9fc] to-[#e9f5f9] relative z-20"
+        className="py-32 px-6 relative z-20 bg-gradient-to-br from-[#f7e8f6]/90 via-[#f8f9fc]/80 to-[#e9f5f9]/90 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
       >
-        {/* Decorative elements */}
+        {/* Decorative background elements */}
         <motion.div 
-          className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-[#f7e8f6]/50 to-transparent pointer-events-none"
-          animate={{ y: [-10, 10, -10] }}
-          transition={{ duration: 5, repeat: Infinity }}
-        />
-        
+          className="absolute inset-0 overflow-hidden pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          {/* Animated gradient orbs */}
+          <motion.div 
+            className="absolute top-0 left-1/4 w-[700px] h-[700px] bg-[#ffd6e0]/20 rounded-full blur-[160px]"
+            animate={{
+              scale: [1.2, 1, 1.2],
+              x: [-50, 50, -50],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div 
+            className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-[#c1d3fe]/20 rounded-full blur-[180px]"
+            animate={{
+              scale: [1, 1.3, 1],
+              x: [50, -50, 50],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          
+          {/* Shimmer effects */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+            animate={{
+              x: ['-100%', '100%'],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-l from-transparent via-white/5 to-transparent"
+            animate={{
+              x: ['100%', '-100%'],
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+          
+          {/* Pattern overlay */}
+          <div className="absolute inset-0 bg-[url('/totoro-pattern.png')] bg-repeat opacity-[0.03] rotate-180" />
+          
+          {/* Sparkles */}
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                opacity: [0, 0.8, 0],
+                scale: [0, 1.2, 0],
+              }}
+              transition={{
+                duration: 2 + Math.random() * 2,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </motion.div>
+
         <div className="max-w-4xl mx-auto">
           <motion.h2 
             className="text-4xl mb-16 text-center text-[#2d5a88] font-light relative"
@@ -291,7 +400,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      <footer className="py-16 px-6 text-center relative z-20 bg-gradient-to-t from-[#f7e8f6] to-[#f8f9fc]">
+      <footer className="py-16 px-6 text-center relative z-20 bg-gradient-to-t from-[#f7e8f6]/90 to-[#f8f9fc]/80 backdrop-blur-sm">
         <motion.div
           className="flex justify-center gap-3 mb-6"
           initial={{ opacity: 0 }}

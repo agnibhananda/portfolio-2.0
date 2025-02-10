@@ -4,24 +4,45 @@ import { motion, useSpring, useTransform, useMotionValue } from "framer-motion"
 import { useEffect, useState } from "react"
 
 export function InteractiveTree() {
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const mouseXSpring = useSpring(0, { stiffness: 300, damping: 30 })
   const mouseYSpring = useSpring(0, { stiffness: 300, damping: 30 })
 
   useEffect(() => {
+    // Set initial window size
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+
+    // Handle window resize
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
+    }
+
+    // Handle mouse movement
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e
       setMousePosition({ x: clientX, y: clientY })
     }
 
+    window.addEventListener("resize", handleResize)
     window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+      window.removeEventListener("mousemove", handleMouseMove)
+    }
   }, [])
 
   useEffect(() => {
     mouseXSpring.set(mousePosition.x)
     mouseYSpring.set(mousePosition.y)
-  }, [mousePosition])
+  }, [mousePosition, mouseXSpring, mouseYSpring])
 
   const leaves = Array.from({ length: 12 }, (_, i) => {
     const x = useMotionValue(Math.random() * 100)
@@ -29,12 +50,12 @@ export function InteractiveTree() {
     
     const rotateX = useTransform(
       mouseYSpring,
-      [0, window.innerHeight],
+      [0, windowSize.height || 1],
       [10, -10]
     )
     const rotateY = useTransform(
       mouseXSpring,
-      [0, window.innerWidth],
+      [0, windowSize.width || 1],
       [-10, 10]
     )
 
