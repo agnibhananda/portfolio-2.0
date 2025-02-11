@@ -2,6 +2,7 @@ import { getBlogPosts } from '@/lib/blog'
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { BlogPostContent } from '@/components/blog-post-content'
+import { CustomCursor } from '@/components/custom-cursor'
 
 export const revalidate = 3600 // Revalidate every hour
 
@@ -21,7 +22,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
   }
 
   return (
-    <main className="min-h-screen py-24 px-6 relative overflow-hidden">
+    <main className="min-h-screen py-24 px-6 relative overflow-hidden cursor-none">
+      <CustomCursor />
       <BlogPostContent post={post}>
         <MDXRemote source={post.content} />
       </BlogPostContent>

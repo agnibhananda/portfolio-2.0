@@ -2,6 +2,7 @@ import { getBlogPosts } from '@/lib/blog'
 import { BackButton } from '@/components/back-button'
 import { BlogPostCard } from '@/components/blog-post-card'
 import { AnimatedHeader } from '@/components/animated-header'
+import { CustomCursor } from '@/components/custom-cursor'
 import Image from 'next/image'
 
 export const revalidate = 3600 // Revalidate every hour
@@ -10,7 +11,8 @@ export default async function BlogPage() {
   const posts = await getBlogPosts()
 
   return (
-    <main className="min-h-screen py-24 px-6 bg-[#B5CAD0] dark:bg-[#2D3C54]">
+    <main className="min-h-screen py-24 px-6 bg-[#B5CAD0] dark:bg-[#2D3C54] cursor-none">
+      <CustomCursor />
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[url('/totoro-pattern.png')] bg-repeat opacity-[0.03]" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#A4B7C9]/5 dark:via-[#3D4E6C]/5 to-[#8B9DAF]/10 dark:to-[#4A5C7B]/10" />
