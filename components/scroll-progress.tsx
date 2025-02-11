@@ -1,14 +1,30 @@
 "use client"
 
 import { motion, useScroll, useSpring, useTransform } from "framer-motion"
+import { useEffect, useState } from "react"
 
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll()
+  const [progress, setProgress] = useState(0)
+  
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001
   })
+
+  const pathLength = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  })
+
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (latest) => {
+      setProgress(Math.round(latest * 100))
+    })
+    return () => unsubscribe()
+  }, [scrollYProgress])
 
   return (
     <>
@@ -17,25 +33,44 @@ export function ScrollProgress() {
         style={{ scaleX }}
       />
       <motion.div
-        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white/80 text-sm z-50"
+        className="fixed bottom-8 right-8 w-16 h-16 flex items-center justify-center z-50"
         style={{
-          scale: useSpring(scrollYProgress, {
+          scale: useSpring(useTransform(scrollYProgress, [0, 0.1], [0, 1]), {
             stiffness: 100,
-            damping: 30,
-            restDelta: 0.001
+            damping: 30
           })
         }}
       >
+        <svg
+          className="absolute w-full h-full"
+          viewBox="0 0 100 100"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="45"
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.1)"
+            strokeWidth="6"
+          />
+          <motion.circle
+            cx="50"
+            cy="50"
+            r="45"
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.8)"
+            strokeWidth="6"
+            strokeDasharray="283"
+            style={{
+              pathLength,
+              rotate: -90,
+              transformOrigin: "50% 50%"
+            }}
+            className="drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+          />
+        </svg>
         <motion.div
-          style={{
-            rotate: useSpring(
-              useTransform(scrollYProgress, [0, 1], [0, 360]),
-              { stiffness: 100, damping: 30 }
-            )
-          }}
-          className="absolute inset-0 rounded-full border-2 border-white/20 border-t-white/80"
-        />
-        <motion.span
+          className="absolute inset-0 flex items-center justify-center text-white/80 text-sm font-medium bg-white/10 backdrop-blur-sm rounded-full border border-white/20"
           style={{
             opacity: useSpring(scrollYProgress, {
               stiffness: 100,
@@ -43,8 +78,10 @@ export function ScrollProgress() {
             })
           }}
         >
-          {Math.round(useTransform(scrollYProgress, [0, 1], [0, 100]).get())}%
-        </motion.span>
+          <motion.span>
+            {progress}%
+          </motion.span>
+        </motion.div>
       </motion.div>
     </>
   )

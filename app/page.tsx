@@ -12,6 +12,15 @@ import { useState } from "react"
 import { CustomCursor } from "@/components/custom-cursor"
 import { ScrollProgress } from "@/components/scroll-progress"
 import { ParticleField } from "@/components/particle-field"
+import { AnimatePresence } from "framer-motion"
+
+interface EducationEntry {
+  institution: string
+  degree: string
+  period: string
+  logo: string
+  achievements?: string[]
+}
 
 const projects = [
   {
@@ -20,23 +29,57 @@ const projects = [
     tech: ["Next.js", "TypeScript", "Framer Motion", "TailwindCSS"],
     github: "https://github.com/",
     live: "https://google.com",
+  },
+]
 
+const education: EducationEntry[] = [
+  {
+    institution: "Indian Institute of Technology, Madras",
+    degree: "BS in Data Science",
+    period: "2024 - 2028",
+    logo: "/iitm.png",
+  },
+  {
+    institution: "Jaypee Institute of Information Technology",
+    degree: "B Tech in Computer Science and Engineering",
+    period: "2024 - 2028",
+    logo: "/jiit.png",
   },
 
 ]
 
 export default function Home() {
   const { scrollYProgress } = useScroll()
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.9])
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
+  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.9])
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cursorText, setCursorText] = useState("")
   const [cursorVariant, setCursorVariant] = useState("default")
+  const [clickCount, setClickCount] = useState(0)
+  const [showEasterEgg, setShowEasterEgg] = useState(false)
+  const [activeTab, setActiveTab] = useState('education')
 
-  // Parallax effect for hero section
+  // Enhanced parallax effects
   const { scrollY } = useScroll()
-  const y1 = useTransform(scrollY, [0, 500], [0, 200])
-  const y2 = useTransform(scrollY, [0, 500], [0, -100])
+  const y1 = useTransform(scrollY, [0, 1000], [0, 400])
+  const y2 = useTransform(scrollY, [0, 1000], [0, -200])
+  const bgScale = useTransform(scrollY, [0, 500], [1, 1.2])
+  const fadeOpacity = useTransform(scrollY, [0, 300, 500], [1, 0.5, 0])
+  const textY = useTransform(scrollY, [0, 300], [0, 100])
+  const blur = useTransform(scrollY, [0, 300], [0, 10])
+
+  // Easter egg handler
+  const handleNameClick = () => {
+    setClickCount(prev => {
+      const newCount = prev + 1
+      if (newCount === 5) {
+        setShowEasterEgg(true)
+        setTimeout(() => setShowEasterEgg(false), 3000)
+        return 0
+      }
+      return newCount
+    })
+  }
 
   return (
     <main className="min-h-screen relative overflow-hidden cursor-none">
@@ -47,7 +90,7 @@ export default function Home() {
       {/* Only show AnimatedBackground and FloatingSpirits on larger screens */}
       <div className="hidden md:block">
         <AnimatedBackground />
-        <FloatingSpirits />
+      <FloatingSpirits />
       </div>
       
       {/* Simplified background for mobile */}
@@ -90,7 +133,7 @@ export default function Home() {
                   initial={{ width: "0%" }}
                   whileHover={{ width: "100%", boxShadow: "0 0 10px rgba(255,255,255,0.5)" }}
                 />
-              </Link>
+          </Link>
             </motion.div>
           ))}
           <ThemeToggle />
@@ -130,7 +173,7 @@ export default function Home() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item}
-                </Link>
+          </Link>
               </motion.div>
             ))}
             
@@ -151,12 +194,16 @@ export default function Home() {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/80 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors relative group"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <span className="sr-only">{item.label}</span>
-                  <item.icon className="w-6 h-6" />
+                  <item.icon className="w-6 h-6 relative z-10" />
+                  <motion.div
+                    className="absolute -inset-3 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    layoutId={`hover-${item.label}`}
+                  />
                 </motion.a>
               ))}
             </motion.div>
@@ -165,37 +212,77 @@ export default function Home() {
       </nav>
 
       <motion.section 
-        className="relative min-h-screen flex items-center justify-center overflow-hidden px-4"
-        style={{ opacity }}
-        onViewportEnter={() => {
-          document.body.style.setProperty('--scroll-speed', '1')
-        }}
-        onViewportLeave={() => {
-          document.body.style.setProperty('--scroll-speed', '0.5')
-        }}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
       >
+        {/* Background layers with parallax */}
         <motion.div 
-          className="absolute inset-0 bg-cover bg-center opacity-90 transition-all duration-500"
+          className="absolute inset-0 bg-cover bg-center"
           style={{ 
             backgroundImage: 'url("/bg.jpg")',
-            y: y1
+            y: y1,
+            scale: bgScale,
           }}
         />
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30"
+          className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60"
           style={{ y: y2 }}
         />
         
-        <div className="relative z-10 text-center space-y-6 md:space-y-8 max-w-3xl mx-auto">
-          <AnimatedText text="Agnibha Nanda" className="text-4xl md:text-6xl lg:text-8xl font-light text-[#FFFFFF] drop-shadow-lg" />
-          
+        {/* Interactive particles on scroll */}
+        <motion.div 
+          className="absolute inset-0"
+          style={{ 
+            filter: `blur(${blur}px)`,
+            opacity: fadeOpacity
+          }}
+        >
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-white rounded-full"
+              style={{
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+              }}
+              animate={{
+                y: [0, -100],
+                opacity: [0, 1, 0],
+                scale: [0, 1, 0],
+              }}
+              transition={{
+                duration: 2 + Math.random() * 2,
+                repeat: Infinity,
+                delay: i * 0.1,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </motion.div>
+
+        {/* Content with scroll animations */}
+        <motion.div 
+          className="relative z-10 text-center space-y-8 max-w-3xl mx-auto px-4"
+          style={{ y: textY }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <AnimatedText 
+              text="Agnibha Nanda" 
+              className="text-4xl md:text-6xl lg:text-8xl font-light text-white drop-shadow-lg" 
+            />
+          </motion.div>
+
           <motion.div
             className="flex justify-center gap-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-            onMouseEnter={() => setCursorVariant("hover")}
-            onMouseLeave={() => setCursorVariant("default")}
           >
             {[
               { icon: Github, href: "https://github.com/agnibhananda", label: "GitHub" },
@@ -208,7 +295,7 @@ export default function Home() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/80 hover:text-white transition-colors"
+                className="text-white/80 hover:text-white transition-colors relative group"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -216,12 +303,17 @@ export default function Home() {
                 transition={{ delay: 0.8 + i * 0.1 }}
               >
                 <span className="sr-only">{item.label}</span>
-                <item.icon className="w-6 h-6" />
+                <item.icon className="w-6 h-6 relative z-10" />
+                <motion.div
+                  className="absolute -inset-3 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  layoutId={`hover-${item.label}`}
+                />
               </motion.a>
             ))}
           </motion.div>
-        </div>
+        </motion.div>
 
+        {/* Enhanced scroll indicator */}
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 flex flex-col items-center gap-2"
           animate={{
@@ -232,23 +324,16 @@ export default function Home() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
+          style={{ opacity: useTransform(scrollY, [0, 200], [1, 0]) }}
         >
-          <span className="text-sm">Scroll to explore</span>
+          <span className="text-sm font-light tracking-wider">Scroll to explore</span>
           <motion.div
-            className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center"
-            animate={{
-              y: [0, 8, 0],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center relative overflow-hidden"
           >
             <motion.div
-              className="w-1 h-1 bg-white/60 rounded-full mt-2"
+              className="w-1.5 h-1.5 bg-white/80 rounded-full absolute top-2"
               animate={{
-                opacity: [1, 0.5, 1],
+                y: [0, 24, 0],
               }}
               transition={{
                 duration: 1.5,
@@ -270,14 +355,6 @@ export default function Home() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        onMouseMove={(e) => {
-          const { clientX, clientY } = e
-          const { left, top, width, height } = e.currentTarget.getBoundingClientRect()
-          const x = (clientX - left) / width
-          const y = (clientY - top) / height
-          e.currentTarget.style.setProperty('--mouse-x', `${x * 100}%`)
-          e.currentTarget.style.setProperty('--mouse-y', `${y * 100}%`)
-        }}
       >
         <motion.div 
           className="absolute inset-0 overflow-hidden pointer-events-none"
@@ -341,9 +418,9 @@ export default function Home() {
           <div className="absolute inset-0 bg-[url('/totoro-pattern.png')] bg-repeat opacity-[0.03]" />
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <motion.h2 
-            className="text-4xl mb-12 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif relative"
+            className="text-4xl mb-16 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif relative"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -358,76 +435,174 @@ export default function Home() {
               ✨
             </motion.span>
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-            <motion.div 
-              className="space-y-6"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <p className="text-lg leading-relaxed text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-sans relative pl-16">
-                I'm a Computer Science student.
-                I like to build cool stuff.
-                <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-16 h-16">
-                  <Image
-                    src="/black.png"
-                    alt="Black cat"
-                    width={64}
-                    height={64}
-                    className="w-full h-full object-contain opacity-90"
-                  />
-                </div>
-              </p>
-              <p className="text-lg leading-relaxed text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-sans">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eos, nesciunt non enim distinctio odio cupiditate ea maiores dignissimos.
-              </p>
-            </motion.div>
-            <motion.div
-              className="relative h-96 rounded-xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#A4B7C9]/40 to-[#8B9DAF]/40 shadow-lg backdrop-blur-sm border border-white/20 dark:border-white/10"
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <InteractiveTree />
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent"
-                animate={{ 
-                  opacity: [0.3, 0.5, 0.3],
-                  background: [
-                    "linear-gradient(to top, rgba(255,255,255,0.2), transparent)",
-                    "linear-gradient(to top, rgba(164,183,201,0.2), transparent)",
-                    "linear-gradient(to top, rgba(255,255,255,0.2), transparent)"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-              />
-              {/* Add floating leaves */}
-              {[...Array(5)].map((_, i) => (
+
+          <div className="space-y-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
+              <motion.div 
+                className="space-y-6 md:col-span-2 max-w-2xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
                 <motion.div
-                  key={i}
-                  className="absolute w-6 h-6 bg-[url('/leaf.png')] bg-contain bg-no-repeat opacity-40"
-                  style={{
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                  }}
-                  animate={{
-                    y: [0, -100],
-                    x: [0, Math.random() * 50 - 25],
-                    rotate: [0, 360],
-                    opacity: [0.4, 0],
-                  }}
-                  transition={{
-                    duration: 5 + Math.random() * 3,
-                    repeat: Infinity,
-                    delay: i * 0.8,
-                    ease: "easeOut",
-                  }}
-                />
-              ))}
-            </motion.div>
+                  className="relative aspect-square rounded-2xl overflow-hidden shadow-xl max-w-md mx-auto"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Image
+                    src="/photo.jpg"
+                    alt="Agnibha Nanda"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 40vw"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                </motion.div>
+
+                <div className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-2xl p-8 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg">
+                  <p className="text-lg leading-relaxed text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-sans relative pl-16">
+                    i sometimes like to build cool stuff.
+                    <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-16 h-16">
+                      <Image
+                        src="/black.png"
+                        alt="Black cat"
+                        width={64}
+                        height={64}
+                        className="w-full h-full object-contain opacity-90"
+                      />
+                    </div>
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Work and Education Tabs */}
+            <div className="mt-16">
+              <div className="flex justify-center gap-4 mb-8">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`px-8 py-3 rounded-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium relative group transition-all duration-300 ${activeTab === 'education' ? 'bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 shadow-lg' : 'hover:bg-[#A4B7C9]/30 dark:hover:bg-[#3D4E6C]/30'}`}
+                  onClick={() => setActiveTab('education')}
+                >
+                  <span className="relative z-10">Education</span>
+                  {activeTab === 'education' && (
+                    <motion.div
+                      className="absolute inset-0 rounded-xl bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 -z-10"
+                      layoutId="activeTab"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`px-8 py-3 rounded-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium relative group transition-all duration-300 ${activeTab === 'work' ? 'bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 shadow-lg' : 'hover:bg-[#A4B7C9]/30 dark:hover:bg-[#3D4E6C]/30'}`}
+                  onClick={() => setActiveTab('work')}
+                >
+                  <span className="relative z-10">Work</span>
+                  {activeTab === 'work' && (
+                    <motion.div
+                      className="absolute inset-0 rounded-xl bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 -z-10"
+                      layoutId="activeTab"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                </motion.button>
+              </div>
+
+              <AnimatePresence mode="wait">
+                {activeTab === 'education' ? (
+                  <motion.div
+                    key="education"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    {education.map((entry, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-xl p-6 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <div className="flex items-center gap-6">
+                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-[#B5CAD0]/50 dark:bg-[#4A5C7B]/50 flex items-center justify-center shadow-inner">
+                            <Image
+                              src={entry.logo}
+                              alt={entry.institution}
+                              width={32}
+                              height={32}
+                              className="w-8 h-8 object-contain"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium mb-1 truncate">{entry.institution}</h3>
+                            <p className="text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60 text-sm">{entry.degree} • {entry.period}</p>
+                          </div>
+                        </div>
+                        {entry.achievements && entry.achievements.length > 0 && (
+                          <ul className="mt-4 space-y-2 text-[#3D4E6C] dark:text-[#C5D1DC]/90 ml-4">
+                            {entry.achievements.map((achievement, i) => (
+                              <li key={i} className="flex items-center gap-3">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#3D4E6C] dark:bg-[#C5D1DC] opacity-60" />
+                                <span className="text-sm">{achievement}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="work"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    <div className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-xl p-6 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300">
+                      <div className="flex items-center gap-6">
+                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-[#B5CAD0]/50 dark:bg-[#4A5C7B]/50 flex items-center justify-center shadow-inner">
+                          <Image
+                            src="/iitm.png"
+                            alt="Work"
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 object-contain"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium mb-1">Software Engineer</h3>
+                          <p className="text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60 text-sm">Company Name • 2023 - Present</p>
+                        </div>
+                      </div>
+                      <ul className="mt-4 space-y-2 text-[#3D4E6C] dark:text-[#C5D1DC]/90 ml-4">
+                        <li className="flex items-center gap-3">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#3D4E6C] dark:bg-[#C5D1DC] opacity-60" />
+                          <span className="text-sm">Led development of key features</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#3D4E6C] dark:bg-[#C5D1DC] opacity-60" />
+                          <span className="text-sm">Collaborated with cross-functional teams</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#3D4E6C] dark:bg-[#C5D1DC] opacity-60" />
+                          <span className="text-sm">Improved application performance</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 
