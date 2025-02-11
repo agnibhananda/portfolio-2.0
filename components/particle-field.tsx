@@ -19,6 +19,8 @@ export function ParticleField() {
   const rafRef = useRef<number>()
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -26,6 +28,7 @@ export function ParticleField() {
     if (!ctx) return
 
     const resizeCanvas = () => {
+      if (typeof window === 'undefined') return
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
     }
@@ -99,16 +102,20 @@ export function ParticleField() {
       }
     }
 
-    window.addEventListener('resize', resizeCanvas)
-    canvas.addEventListener('mousemove', handleMouseMove)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', resizeCanvas)
+      canvas.addEventListener('mousemove', handleMouseMove)
+    }
 
     resizeCanvas()
     createParticles()
     updateParticles()
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas)
-      canvas.removeEventListener('mousemove', handleMouseMove)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', resizeCanvas)
+        canvas.removeEventListener('mousemove', handleMouseMove)
+      }
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
   }, [])

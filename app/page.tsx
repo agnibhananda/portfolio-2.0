@@ -244,18 +244,17 @@ export default function Home() {
               key={i}
               className="absolute w-2 h-2 bg-white rounded-full"
               style={{
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
               }}
               animate={{
-                y: [0, -100],
-                opacity: [0, 1, 0],
-                scale: [0, 1, 0],
+                opacity: [0, 0.8, 0],
+                scale: [0, 1.2, 0],
               }}
               transition={{
                 duration: 2 + Math.random() * 2,
                 repeat: Infinity,
-                delay: i * 0.1,
+                delay: Math.random() * 2,
                 ease: "easeInOut",
               }}
             />
