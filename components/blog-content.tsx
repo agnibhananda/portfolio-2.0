@@ -1,11 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useState, useMemo } from 'react'
 import { BackButton } from '@/components/back-button'
 import { BlogPostCard } from '@/components/blog-post-card'
 import { AnimatedHeader } from '@/components/animated-header'
 import { CustomCursor } from '@/components/custom-cursor'
 import { MouseGradient } from '@/components/mouse-gradient'
+import { BlogControls } from '@/components/blog-controls'
 import type { BlogPost } from '@/lib/blog'
 
 interface BlogContentProps {
@@ -13,8 +15,40 @@ interface BlogContentProps {
 }
 
 export function BlogContent({ posts }: BlogContentProps) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [selectedTag, setSelectedTag] = useState('')
+
+  // Get all unique tags from posts
+  const availableTags = useMemo(() => {
+    const tags = new Set<string>()
+    posts.forEach(post => {
+      post.tags?.forEach(tag => tags.add(tag))
+    })
+    return Array.from(tags)
+  }, [posts])
+
+  // Filter and sort posts
+  const filteredPosts = useMemo(() => {
+    return posts
+      .filter(post => {
+        const matchesSearch = 
+          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+        
+        const matchesTag = !selectedTag || post.tags?.includes(selectedTag)
+        
+        return matchesSearch && matchesTag
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.date).getTime()
+        const dateB = new Date(b.date).getTime()
+        return sortOrder === 'desc' ? dateB - dateA : dateA - dateB
+      })
+  }, [posts, searchQuery, selectedTag, sortOrder])
+
   return (
-    <main className="min-h-screen py-24 px-6 bg-[#B5CAD0] dark:bg-[#2D3C54] cursor-none">
+    <main className="min-h-screen py-16 md:py-24 px-4 sm:px-6 bg-[#B5CAD0] dark:bg-[#2D3C54] cursor-none">
       <CustomCursor />
       <MouseGradient />
       
@@ -26,7 +60,7 @@ export function BlogContent({ posts }: BlogContentProps) {
 
       <div className="max-w-4xl mx-auto relative">
         <motion.div 
-          className="mb-16"
+          className="mb-8 md:mb-16"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -38,6 +72,7 @@ export function BlogContent({ posts }: BlogContentProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          className="mb-8 md:mb-12"
         >
           <AnimatedHeader 
             title="Blog"
@@ -45,26 +80,33 @@ export function BlogContent({ posts }: BlogContentProps) {
           />
         </motion.div>
 
+        <BlogControls
+          onSearch={setSearchQuery}
+          onSort={setSortOrder}
+          onFilterByTag={setSelectedTag}
+          availableTags={availableTags}
+        />
+
         <motion.div 
-          className="grid gap-8"
+          className="grid gap-4 md:gap-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          {posts.map((post, index) => (
+          {filteredPosts.map((post, index) => (
             <BlogPostCard key={post.slug} post={post} index={index} />
           ))}
         </motion.div>
 
-        {posts.length === 0 && (
+        {filteredPosts.length === 0 && (
           <motion.div 
-            className="text-center py-12 relative"
+            className="text-center py-8 md:py-12 relative"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
           >
             <motion.p 
-              className="text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60"
+              className="text-sm md:text-base text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60"
               animate={{
                 y: [0, -5, 0],
               }}
@@ -74,7 +116,7 @@ export function BlogContent({ posts }: BlogContentProps) {
                 ease: "easeInOut",
               }}
             >
-              No blog posts yet.
+              {searchQuery || selectedTag ? 'No matching posts found.' : 'No blog posts yet.'}
             </motion.p>
           </motion.div>
         )}

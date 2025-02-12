@@ -9,25 +9,31 @@ interface AnimatedHeaderProps {
 
 export function AnimatedHeader({ title, subtitle }: AnimatedHeaderProps) {
   return (
-    <div className="text-center mb-16">
+    <motion.div 
+      className="mb-12 text-center"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
       <motion.h1 
-        className="text-4xl md:text-5xl font-light text-[#2d5a88] mb-4"
+        className="text-4xl md:text-5xl font-light text-[#3D4E6C] dark:text-[#C5D1DC] mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
       >
         {title}
       </motion.h1>
+      
       {subtitle && (
-        <motion.p 
-          className="text-[#4a6fa5]/80"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+        <motion.p
+          className="text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60 text-lg"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
         >
           {subtitle}
         </motion.p>
       )}
-    </div>
+    </motion.div>
   )
 } 

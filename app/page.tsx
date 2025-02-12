@@ -58,6 +58,7 @@ export default function Home() {
   const [clickCount, setClickCount] = useState(0)
   const [showEasterEgg, setShowEasterEgg] = useState(false)
   const [activeTab, setActiveTab] = useState('education')
+  const [showThankYou, setShowThankYou] = useState(false)
 
   // Enhanced parallax effects
   const { scrollY } = useScroll()
@@ -79,6 +80,24 @@ export default function Home() {
       }
       return newCount
     })
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const form = e.currentTarget
+    const formData = new FormData(form)
+
+    try {
+      await fetch('https://formsubmit.co/agnibhananda@gmail.com', {
+        method: 'POST',
+        body: formData,
+      })
+      setShowThankYou(true)
+      form.reset()
+      setTimeout(() => setShowThankYou(false), 5000)
+    } catch (error) {
+      console.error('Error submitting form:', error)
+    }
   }
 
   return (
@@ -290,10 +309,10 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">Building</span>{' '}
-              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">delightful</span>{' '}
-              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">digital</span>{' '}
-              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">experiences</span>
+              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">Living</span>{' '}
+              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">to</span>{' '}
+              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">tell</span>{' '}
+              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">stories</span>
             </motion.p>
           </motion.div>
 
@@ -346,9 +365,9 @@ export default function Home() {
 
         {/* Enhanced scroll indicator */}
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 flex flex-col items-center gap-2"
+          className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 text-white/80 flex flex-col items-center gap-2 z-10"
           animate={{
-            y: [0, 10, 0],
+            y: [0, 8, 0],
           }}
           transition={{
             duration: 2,
@@ -357,15 +376,15 @@ export default function Home() {
           }}
           style={{ opacity: useTransform(scrollY, [0, 200], [1, 0]) }}
         >
-          <span className="text-sm font-light tracking-wider">Scroll to explore</span>
+          <span className="text-xs md:text-sm font-light tracking-wider">Scroll to explore</span>
           <motion.div
-            className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center relative overflow-hidden"
+            className="w-5 h-8 md:w-6 md:h-10 border border-white/80 rounded-full flex justify-center relative overflow-hidden"
             whileHover={{ scale: 1.1 }}
           >
             <motion.div
-              className="w-1.5 h-1.5 bg-white/80 rounded-full absolute top-2"
+              className="w-1 h-1 md:w-1.5 md:h-1.5 bg-white/90 rounded-full absolute top-1.5"
               animate={{
-                y: [0, 24, 0],
+                y: [0, 16, 0],
               }}
               transition={{
                 duration: 1.5,
@@ -945,12 +964,21 @@ export default function Home() {
           </motion.h2>
 
           <motion.form 
+            onSubmit={handleSubmit}
+            action="https://formsubmit.co/agnibhananda@gmail.com" 
+            method="POST"
             className="space-y-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
+            {/* FormSubmit.co configuration fields */}
+            <input type="hidden" name="_subject" value="New Portfolio Contact!" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="true" />
+            <input type="text" name="_honey" style={{ display: 'none' }} />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <motion.div
                 className="space-y-2"
@@ -962,6 +990,8 @@ export default function Home() {
                 <label className="block text-[#3D4E6C] dark:text-[#C5D1DC] font-medium font-sans">Name</label>
                 <input
                   type="text"
+                  name="name"
+                  required
                   className="w-full px-4 py-3 rounded-lg bg-[#B5CAD0]/20 dark:bg-black/20 border border-[#8B9DAF]/30 dark:border-white/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#8B9DAF]/50 dark:focus:ring-[#C5D1DC]/50 text-[#3D4E6C] dark:text-[#C5D1DC] placeholder-[#3D4E6C]/50 dark:placeholder-[#C5D1DC]/50 font-normal font-sans"
                   placeholder="Your name"
                 />
@@ -976,6 +1006,8 @@ export default function Home() {
                 <label className="block text-[#3D4E6C] dark:text-[#C5D1DC] font-medium font-sans">Email</label>
                 <input
                   type="email"
+                  name="email"
+                  required
                   className="w-full px-4 py-3 rounded-lg bg-[#B5CAD0]/20 dark:bg-black/20 border border-[#8B9DAF]/30 dark:border-white/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#8B9DAF]/50 dark:focus:ring-[#C5D1DC]/50 text-[#3D4E6C] dark:text-[#C5D1DC] placeholder-[#3D4E6C]/50 dark:placeholder-[#C5D1DC]/50 font-normal font-sans"
                   placeholder="your@email.com"
                 />
@@ -990,6 +1022,8 @@ export default function Home() {
             >
               <label className="block text-[#3D4E6C] dark:text-[#C5D1DC] font-medium font-sans">Message</label>
               <textarea
+                name="message"
+                required
                 rows={6}
                 className="w-full px-4 py-3 rounded-lg bg-[#B5CAD0]/20 dark:bg-black/20 border border-[#8B9DAF]/30 dark:border-white/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#8B9DAF]/50 dark:focus:ring-[#C5D1DC]/50 text-[#3D4E6C] dark:text-[#C5D1DC] placeholder-[#3D4E6C]/50 dark:placeholder-[#C5D1DC]/50 resize-none font-normal font-sans"
                 placeholder="Your message..."
@@ -1004,7 +1038,7 @@ export default function Home() {
             >
               <motion.button
                 type="submit"
-                className="px-8 py-3 rounded-lg bg-[#8B9DAF] dark:bg-[#5C6F8A] text-[#2D3C54] dark:text-white font-normal font-sans text-lg hover:bg-[#B5CAD0] dark:hover:bg-[#4A5C7B] transition-colors relative group overflow-hidden"
+                className="px-8 py-3 rounded-lg bg-[#8B9DAF] dark:bg-[#5C6F8A] text-[#2D3C54] dark:text-white font-normal font-sans text-lg hover:bg-[#B5CAD0] dark:hover:bg-[#4A5C7B] transition-colors relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -1064,6 +1098,41 @@ export default function Home() {
           © {new Date().getFullYear()} Agnibha Nanda
         </motion.p>
       </footer>
+
+      {/* Thank You Popup */}
+      <AnimatePresence>
+        {showThankYou && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed bottom-8 right-8 z-50 bg-[#8B9DAF] dark:bg-[#3D4E6C] text-[#2D3C54] dark:text-white px-6 py-4 rounded-lg shadow-lg border border-[#C5D1DC]/30 dark:border-white/10 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <svg
+                  className="w-6 h-6 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </motion.div>
+              <p className="font-medium">Thanks for reaching out! I'll get back to you soon.</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   )
 }
