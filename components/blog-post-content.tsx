@@ -3,8 +3,6 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { GhibliElements } from '@/components/ghibli-elements'
-import { AnimatedBackground } from '@/components/animated-background'
 import type { BlogPost } from '@/lib/blog'
 import type { ReactNode } from 'react'
 
@@ -16,9 +14,6 @@ interface BlogPostContentProps {
 export function BlogPostContent({ post, children }: BlogPostContentProps) {
   return (
     <div className="relative">
-      <AnimatedBackground />
-      <GhibliElements />
-
       <motion.article 
         className="max-w-3xl mx-auto relative"
         initial={{ opacity: 0, y: 20 }}
@@ -98,47 +93,12 @@ export function BlogPostContent({ post, children }: BlogPostContentProps) {
           )}
         </motion.header>
 
-        {/* Main content */}
         <motion.div 
           className="prose max-w-none prose-headings:font-light prose-headings:text-[#1a332b] dark:prose-headings:text-[#be95c4] prose-p:text-[#2c4a3c] dark:prose-p:text-[#c1d3fe]/80 prose-a:text-[#2c4a3c] dark:prose-a:text-[#c1d3fe] prose-a:no-underline hover:prose-a:text-[#1a332b] dark:hover:prose-a:text-white prose-strong:text-[#1a332b] dark:prose-strong:text-[#be95c4] prose-code:text-[#2c4a3c] dark:prose-code:text-[#c1d3fe] prose-pre:bg-[#e5ebe7] dark:prose-pre:bg-black/20 prose-pre:backdrop-blur-sm prose-pre:border prose-pre:border-[#c5d6cc]/20 dark:prose-pre:border-white/10 relative"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          {/* Decorative elements */}
-          <div className="absolute -left-20 top-1/4 w-12 h-12 opacity-20">
-            <motion.img
-              src="/totoro-leaf.png"
-              alt="Decorative leaf"
-              className="w-full h-full"
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-          </div>
-          <div className="absolute -right-16 top-1/3 w-10 h-10 opacity-20">
-            <motion.img
-              src="/acorn.png"
-              alt="Decorative acorn"
-              className="w-full h-full"
-              animate={{
-                y: [0, -10, 0],
-                rotate: [-10, 10, -10],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          </div>
-          
           {children}
         </motion.div>
       </motion.article>

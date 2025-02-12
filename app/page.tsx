@@ -90,7 +90,7 @@ export default function Home() {
       {/* Only show AnimatedBackground and FloatingSpirits on larger screens */}
       <div className="hidden md:block">
         <AnimatedBackground />
-      <FloatingSpirits />
+        <FloatingSpirits />
       </div>
       
       {/* Simplified background for mobile */}
@@ -231,7 +231,7 @@ export default function Home() {
           style={{ y: y2 }}
         />
         
-        {/* Interactive particles on scroll */}
+        {/* Interactive particles with mouse follow */}
         <motion.div 
           className="absolute inset-0"
           style={{ 
@@ -250,6 +250,11 @@ export default function Home() {
               animate={{
                 opacity: [0, 0.8, 0],
                 scale: [0, 1.2, 0],
+                filter: [
+                  'brightness(1) blur(0px)',
+                  'brightness(1.2) blur(2px)',
+                  'brightness(1) blur(0px)'
+                ],
               }}
               transition={{
                 duration: 2 + Math.random() * 2,
@@ -257,11 +262,15 @@ export default function Home() {
                 delay: Math.random() * 2,
                 ease: "easeInOut",
               }}
+              whileHover={{
+                scale: 1.5,
+                opacity: 1,
+              }}
             />
           ))}
         </motion.div>
 
-        {/* Content with scroll animations */}
+        {/* Content with enhanced animations */}
         <motion.div 
           className="relative z-10 text-center space-y-8 max-w-3xl mx-auto px-4"
           style={{ y: textY }}
@@ -275,8 +284,20 @@ export default function Home() {
               text="Agnibha Nanda" 
               className="text-4xl md:text-6xl lg:text-8xl font-light text-white drop-shadow-lg" 
             />
+            <motion.p
+              className="mt-6 text-xl text-white/70 font-light"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">Building</span>{' '}
+              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">delightful</span>{' '}
+              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">digital</span>{' '}
+              <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">experiences</span>
+            </motion.p>
           </motion.div>
 
+          {/* Enhanced social links */}
           <motion.div
             className="flex justify-center gap-6"
             initial={{ opacity: 0 }}
@@ -304,8 +325,19 @@ export default function Home() {
                 <span className="sr-only">{item.label}</span>
                 <item.icon className="w-6 h-6 relative z-10" />
                 <motion.div
-                  className="absolute -inset-3 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute -inset-3 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm"
                   layoutId={`hover-${item.label}`}
+                />
+                <motion.div
+                  className="absolute -inset-3 rounded-xl bg-gradient-to-r from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100"
+                  animate={{
+                    x: ['-100%', '100%'],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
                 />
               </motion.a>
             ))}
@@ -328,6 +360,7 @@ export default function Home() {
           <span className="text-sm font-light tracking-wider">Scroll to explore</span>
           <motion.div
             className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center relative overflow-hidden"
+            whileHover={{ scale: 1.1 }}
           >
             <motion.div
               className="w-1.5 h-1.5 bg-white/80 rounded-full absolute top-2"
@@ -361,7 +394,6 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-
           <motion.div 
             className="absolute -top-20 -left-20 w-96 h-96 bg-[#99b080]/20 rounded-full blur-[100px]"
             animate={{
@@ -388,46 +420,43 @@ export default function Home() {
               ease: "easeInOut",
             }}
           />
-          <motion.div 
-            className="absolute -bottom-40 left-1/3 w-[600px] h-[600px] bg-[#86a789]/20 rounded-full blur-[140px]"
-            animate={{
-              scale: [1, 1.3, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 15,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
           
-          <motion.div 
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-            animate={{
-              x: ['-100%', '100%'],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-          
-
-          <div className="absolute inset-0 bg-[url('/totoro-pattern.png')] bg-repeat opacity-[0.03]" />
+          {/* Interactive sparkles */}
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-white/40 rounded-full"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.2, 0.5, 0.2],
+                rotate: [0, 360],
+              }}
+              transition={{
+                duration: 3 + Math.random() * 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: Math.random() * 2,
+              }}
+            />
+          ))}
         </motion.div>
 
         <div className="max-w-5xl mx-auto">
           <motion.h2 
-            className="text-4xl mb-16 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif relative"
+            className="text-4xl mb-16 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif relative group"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            whileHover={{ scale: 1.02 }}
           >
             About Me
             <motion.span
-              className="absolute -right-8 -top-8 text-6xl opacity-20"
+              className="absolute -right-8 -top-8 text-6xl opacity-20 group-hover:opacity-40 transition-opacity"
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
@@ -445,7 +474,7 @@ export default function Home() {
                 transition={{ duration: 0.6 }}
               >
                 <motion.div
-                  className="relative aspect-square rounded-2xl overflow-hidden shadow-xl max-w-md mx-auto"
+                  className="relative aspect-square rounded-2xl overflow-hidden shadow-xl max-w-md mx-auto group"
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                 >
@@ -453,17 +482,51 @@ export default function Home() {
                     src="/photo.jpg"
                     alt="Agnibha Nanda"
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, 40vw"
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                  />
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100"
+                    animate={{
+                      x: ['-200%', '200%'],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
                 </motion.div>
 
-                <div className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-2xl p-8 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg">
+                <motion.div 
+                  className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-2xl p-8 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  whileHover={{ y: -5 }}
+                >
                   <p className="text-lg leading-relaxed text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-sans relative pl-16">
-                    i sometimes like to build cool stuff.
-                    <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-16 h-16">
+                    <motion.span 
+                      className="inline-block"
+                      whileHover={{ y: -2 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    >
+                      i sometimes like to build cool stuff.
+                    </motion.span>
+                    <motion.div 
+                      className="absolute -left-4 top-1/2 -translate-y-1/2 w-16 h-16 group-hover:scale-110 transition-transform duration-300"
+                      animate={{
+                        rotate: [0, 10, 0, -10, 0],
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
                       <Image
                         src="/black.png"
                         alt="Black cat"
@@ -471,9 +534,9 @@ export default function Home() {
                         height={64}
                         className="w-full h-full object-contain opacity-90"
                       />
-                    </div>
+                    </motion.div>
                   </p>
-                </div>
+                </motion.div>
               </motion.div>
             </div>
 
@@ -494,6 +557,17 @@ export default function Home() {
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}
+                  <motion.div
+                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100"
+                    animate={{
+                      x: ['-200%', '200%'],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -624,6 +698,7 @@ export default function Home() {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
       >
+        {/* Enhanced background effects */}
         <motion.div 
           className="absolute inset-0 overflow-hidden pointer-events-none"
           initial={{ opacity: 0 }}
@@ -631,10 +706,14 @@ export default function Home() {
           transition={{ duration: 1 }}
         >
           <motion.div 
-            className="absolute top-0 left-1/4 w-[700px] h-[700px] bg-[#bacdb0]/20 rounded-full blur-[160px]"
+            className="absolute top-0 left-1/4 w-[700px] h-[700px] rounded-full"
+            style={{
+              background: "radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0) 70%)",
+            }}
             animate={{
               scale: [1.2, 1, 1.2],
               x: [-50, 50, -50],
+              opacity: [0.3, 0.5, 0.3],
             }}
             transition={{
               duration: 12,
@@ -642,61 +721,26 @@ export default function Home() {
               ease: "easeInOut",
             }}
           />
-          <motion.div 
-            className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-[#a5c0a7]/20 rounded-full blur-[180px]"
-            animate={{
-              scale: [1, 1.3, 1],
-              x: [50, -50, 50],
-            }}
-            transition={{
-              duration: 15,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
           
-          <motion.div 
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-            animate={{
-              x: ['-100%', '100%'],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-          <motion.div 
-            className="absolute inset-0 bg-gradient-to-l from-transparent via-white/5 to-transparent"
-            animate={{
-              x: ['100%', '-100%'],
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-          
-          <div className="absolute inset-0 bg-[url('/totoro-pattern.png')] bg-repeat opacity-[0.03] rotate-180" />
-          
-          {[...Array(20)].map((_, i) => (
+          {/* Interactive sparkles */}
+          {[...Array(12)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-1 h-1 bg-white rounded-full"
+              className="absolute w-1 h-1 bg-white/30 rounded-full"
               style={{
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
               }}
               animate={{
-                opacity: [0, 0.8, 0],
-                scale: [0, 1.2, 0],
+                scale: [1, 1.5, 1],
+                opacity: [0.2, 0.4, 0.2],
+                rotate: [0, 360],
               }}
               transition={{
-                duration: 2 + Math.random() * 2,
+                duration: 3 + Math.random() * 2,
                 repeat: Infinity,
-                delay: Math.random() * 2,
                 ease: "easeInOut",
+                delay: Math.random() * 2,
               }}
             />
           ))}
@@ -704,7 +748,7 @@ export default function Home() {
 
         <div className="max-w-4xl mx-auto">
           <motion.h2 
-            className="text-4xl mb-16 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif relative"
+            className="text-5xl mb-16 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-light tracking-tight relative group"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -712,18 +756,19 @@ export default function Home() {
           >
             Projects
             <motion.span
-              className="absolute -left-8 -top-8 text-6xl opacity-20"
+              className="absolute -left-8 -top-8 text-6xl opacity-20 group-hover:opacity-40 transition-opacity"
               animate={{ rotate: -360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
               🌟
             </motion.span>
           </motion.h2>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {projects.map((project, i) => (
               <motion.div
                 key={project.title}
-                className="group relative bg-[#A4B7C9]/60 dark:bg-[#2D3C54]/50 p-8 rounded-xl shadow-sm hover:shadow-lg transition-all border border-[#C5D1DC]/30 dark:border-white/10 backdrop-blur-sm overflow-hidden"
+                className="group relative bg-[#A4B7C9]/60 dark:bg-[#2D3C54]/50 p-8 rounded-xl border border-[#C5D1DC]/30 dark:border-white/10 backdrop-blur-sm overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -732,70 +777,95 @@ export default function Home() {
                 onMouseEnter={() => setCursorText("View")}
                 onMouseLeave={() => setCursorText("")}
               >
+                {/* Shimmer effect */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-                  initial={{ x: "100%" }}
-                  whileHover={{ x: [null, "-100%"] }}
-                  transition={{ duration: 1.5, ease: "easeInOut" }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                  transition={{ duration: 1 }}
                 />
+                
+                {/* Hover glow effect */}
+                <motion.div
+                  className="absolute -inset-1 bg-gradient-to-r from-[#99b080]/0 via-[#99b080]/10 to-[#99b080]/0 opacity-0 group-hover:opacity-100 rounded-xl -z-10 blur-xl"
+                  animate={{
+                    backgroundPosition: ["200% 0", "-200% 0"],
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                />
+
                 <div className="relative">
-                  <h3 className="text-2xl mb-3 text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif group-hover:text-[#2D3C54] dark:group-hover:text-white transition-colors flex items-center gap-2">
+                  <motion.h3 
+                    className="text-2xl mb-3 text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif group-hover:text-[#2D3C54] dark:group-hover:text-white transition-colors flex items-center gap-2"
+                    layout
+                  >
                     {project.title}
-                  </h3>
-                  <motion.div
-                    className="absolute -inset-1 bg-gradient-to-r from-[#99b080]/0 via-[#99b080]/10 to-[#99b080]/0 opacity-0 group-hover:opacity-100 rounded-xl -z-10"
-                    animate={{
-                      backgroundPosition: ["200% 0", "-200% 0"],
-                    }}
-                    transition={{
-                      duration: 8,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
-                  <p className="text-[#3D4E6C] dark:text-[#C5D1DC] mb-4 font-normal font-sans">
+                  </motion.h3>
+                  
+                  <motion.p 
+                    className="text-[#3D4E6C] dark:text-[#C5D1DC] mb-4 font-normal font-sans"
+                    layout
+                  >
                     {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-6">
+                  </motion.p>
+
+                  <motion.div 
+                    className="flex flex-wrap gap-2 mb-6"
+                    layout
+                  >
                     {project.tech.map((tech) => (
-                      <span
+                      <motion.span
                         key={tech}
-                        className="px-2 py-1 text-sm rounded-full bg-[#B5CAD0]/30 dark:bg-white/5 text-[#3D4E6C] dark:text-[#C5D1DC] border border-[#C5D1DC]/30 dark:border-white/10 font-medium font-sans"
+                        className="px-2 py-1 text-sm rounded-full bg-[#B5CAD0]/30 dark:bg-white/5 text-[#3D4E6C] dark:text-[#C5D1DC] border border-[#C5D1DC]/30 dark:border-white/10 font-medium font-sans relative group/tech"
+                        whileHover={{ scale: 1.05 }}
+                        layout
                       >
                         {tech}
-                      </span>
+                        <motion.div
+                          className="absolute inset-0 bg-white/10 rounded-full opacity-0 group-hover/tech:opacity-100 transition-opacity"
+                          layoutId={`tech-hover-${tech}`}
+                        />
+                      </motion.span>
                     ))}
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <motion.a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#3D4E6C] dark:text-[#C5D1DC] hover:text-[#2D3C54] dark:hover:text-white transition-colors"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Github className="w-5 h-5" />
-                    </motion.a>
-                    <motion.a
-                      href={project.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#3D4E6C] dark:text-[#C5D1DC] hover:text-[#2D3C54] dark:hover:text-white transition-colors"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <ExternalLink className="w-5 h-5" />
-                    </motion.a>
-                  </div>
+                  </motion.div>
+
+                  <motion.div 
+                    className="flex items-center gap-4"
+                    layout
+                  >
+                    {[
+                      { icon: Github, href: project.github, label: "GitHub" },
+                      { icon: ExternalLink, href: project.live, label: "Live Site" }
+                    ].map((link) => (
+                      <motion.a
+                        key={link.label}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#3D4E6C] dark:text-[#C5D1DC] hover:text-[#2D3C54] dark:hover:text-white transition-colors relative group/link"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <link.icon className="w-5 h-5" />
+                        <motion.span
+                          className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs bg-black/80 text-white rounded opacity-0 group-hover/link:opacity-100 transition-opacity"
+                        >
+                          {link.label}
+                        </motion.span>
+                      </motion.a>
+                    ))}
+                  </motion.div>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
 
+        {/* Mouse follow effect */}
         <motion.div
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
           style={{
             background: "radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.1) 0%, transparent 50%)",
           }}
