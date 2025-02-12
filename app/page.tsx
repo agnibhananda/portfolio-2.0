@@ -28,14 +28,14 @@ const projects = [
     description: "A modern, animated portfolio website built with Next.js, Framer Motion, and TailwindCSS. Features dark mode, smooth animations, and responsive design.",
     tech: ["Next.js", "TypeScript", "Framer Motion", "TailwindCSS"],
     github: "https://github.com/agnibhananda/portfolio-2.0",
-    live: "https://verdant-murex.vercel.app/",
+    live: "https://agnibha-nanda.vercel.app/",
   },
   {
     title: "Verdant",
     description: "Verdant is a comprehensive web application that helps users track, understand, and reduce their carbon footprint through personalized challenges, real-time monitoring, and community engagement.",
     tech: ["React", "TypeScript", "Framer Motion", "TailwindCSS"],
     github: "https://github.com/agnibhananda/verdant",
-    live: "https://google.com",
+    live: "https://verdant-murex.vercel.app",
   },
   {
     title: "AI/ML Hub",
