@@ -27,9 +27,23 @@ const projects = [
     title: "Portfolio Website",
     description: "A modern, animated portfolio website built with Next.js, Framer Motion, and TailwindCSS. Features dark mode, smooth animations, and responsive design.",
     tech: ["Next.js", "TypeScript", "Framer Motion", "TailwindCSS"],
-    github: "https://github.com/",
+    github: "https://github.com/agnibhananda/portfolio-2.0",
+    live: "https://verdant-murex.vercel.app/",
+  },
+  {
+    title: "Verdant",
+    description: "Verdant is a comprehensive web application that helps users track, understand, and reduce their carbon footprint through personalized challenges, real-time monitoring, and community engagement.",
+    tech: ["React", "TypeScript", "Framer Motion", "TailwindCSS"],
+    github: "https://github.com/agnibhananda/verdant",
     live: "https://google.com",
   },
+  {
+    title: "AI/ML Hub",
+    description: "A Website for the AI/ML Hub of Jaypee Institute of Information Technology",
+    tech: ["React", "TypeScript", "Framer Motion", "TailwindCSS"],
+    github: "https://github.com/agnibhananda/ai-ml-hub-website",
+    live: "https://ai-ml-hub.vercel.app/",
+  }
 ]
 
 const education: EducationEntry[] = [
