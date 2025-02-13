@@ -123,7 +123,7 @@ export default function Home() {
       {/* Only show AnimatedBackground and FloatingSpirits on larger screens */}
       <div className="hidden md:block">
         <AnimatedBackground />
-        <FloatingSpirits />
+      <FloatingSpirits />
       </div>
       
       {/* Simplified background for mobile */}
@@ -327,7 +327,7 @@ export default function Home() {
               <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">to</span>{' '}
               <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">tell</span>{' '}
               <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">stories</span>
-            </motion.p>
+          </motion.p>
           </motion.div>
 
           {/* Enhanced social links */}
@@ -362,7 +362,7 @@ export default function Home() {
                   layoutId={`hover-${item.label}`}
                 />
                 <motion.div
-                  className="absolute -inset-3 rounded-xl bg-gradient-to-r from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100"
+                  className="absolute -inset-3 rounded-xl bg-gradient-to-r from-white/0 via-white/5 to-transparent opacity-0 group-hover:opacity-100"
                   animate={{
                     x: ['-100%', '100%'],
                   }}
@@ -501,11 +501,11 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
               <motion.div 
                 className="space-y-6 md:col-span-2 max-w-2xl mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
                 <motion.div
                   className="relative aspect-square rounded-2xl overflow-hidden shadow-xl max-w-md mx-auto group"
                   whileHover={{ scale: 1.02 }}
@@ -541,16 +541,9 @@ export default function Home() {
                   className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-2xl p-8 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 group"
                   whileHover={{ y: -5 }}
                 >
-                  <p className="text-lg leading-relaxed text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-sans relative pl-16">
-                    <motion.span 
-                      className="inline-block"
-                      whileHover={{ y: -2 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                    >
-                      i sometimes like to build cool stuff.
-                    </motion.span>
+                  <p className="text-lg leading-relaxed text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-sans relative pl-12 flex items-center">
                     <motion.div 
-                      className="absolute -left-4 top-1/2 -translate-y-1/2 w-16 h-16 group-hover:scale-110 transition-transform duration-300"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 group-hover:scale-110 transition-transform duration-300"
                       animate={{
                         rotate: [0, 10, 0, -10, 0],
                       }}
@@ -561,13 +554,20 @@ export default function Home() {
                       }}
                     >
                       <Image
-                        src="/black.png"
-                        alt="Black cat"
-                        width={64}
-                        height={64}
+                        src="/fire.png"
+                        alt="fire"
+                        width={32}
+                        height={32}
                         className="w-full h-full object-contain opacity-90"
                       />
                     </motion.div>
+                    <motion.span 
+                      className="inline-block"
+                      whileHover={{ y: -2 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    >
+                      i sometimes like to build cool stuff.
+                    </motion.span>
                   </p>
                 </motion.div>
               </motion.div>
@@ -590,7 +590,7 @@ export default function Home() {
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}
-                  <motion.div
+            <motion.div
                     className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100"
                     animate={{
                       x: ['-200%', '200%'],
@@ -603,7 +603,7 @@ export default function Home() {
                   />
                 </motion.button>
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`px-8 py-3 rounded-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium relative group transition-all duration-300 ${activeTab === 'work' ? 'bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 shadow-lg' : 'hover:bg-[#A4B7C9]/30 dark:hover:bg-[#3D4E6C]/30'}`}
                   onClick={() => setActiveTab('work')}
@@ -705,7 +705,7 @@ export default function Home() {
                         </li>
                       </ul>
                     </div>
-                  </motion.div>
+            </motion.div>
                 )}
               </AnimatePresence>
             </div>
