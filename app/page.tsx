@@ -3,15 +3,10 @@ import Link from "next/link"
 import { Star, Github, ExternalLink, Twitter, Linkedin, Instagram, Menu, X } from "lucide-react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { AnimatedText } from "@/components/animated-text"
-import { FloatingSpirits } from "@/components/floating-spirits"
-import { InteractiveTree } from "@/components/interactive-tree"
-import { AnimatedBackground } from "@/components/animated-background"
-import { ThemeToggle } from "@/components/theme-toggle"
 import Image from "next/image"
 import { useState } from "react"
 import { CustomCursor } from "@/components/custom-cursor"
 import { ScrollProgress } from "@/components/scroll-progress"
-import { ParticleField } from "@/components/particle-field"
 import { AnimatePresence } from "framer-motion"
 
 interface EducationEntry {
@@ -61,6 +56,12 @@ const education: EducationEntry[] = [
   },
 
 ]
+
+// Reduce animation complexity by using simpler variants
+const simpleAnimation = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 }
+}
 
 export default function Home() {
   const { scrollYProgress } = useScroll()
@@ -118,24 +119,18 @@ export default function Home() {
     <main className="min-h-screen relative overflow-hidden cursor-none">
       <CustomCursor />
       <ScrollProgress />
-      <ParticleField />
-      
-      {/* Only show AnimatedBackground and FloatingSpirits on larger screens */}
-      <div className="hidden md:block">
-        <AnimatedBackground />
-      <FloatingSpirits />
-      </div>
       
       {/* Simplified background for mobile */}
       <div className="md:hidden fixed inset-0">
-        <div className="absolute inset-0 bg-[#B5CAD0] dark:bg-[#2D3C54] opacity-95" />
+        <div className="absolute inset-0 bg-warm-cream dark:bg-deep-teal opacity-95" />
         <div className="absolute inset-0 bg-[url('/totoro-pattern.png')] bg-repeat opacity-[0.03]" />
       </div>
 
       <nav className="fixed w-full p-4 md:p-6 flex justify-between items-center z-30 bg-gradient-to-b from-black/20 to-transparent">
         <motion.div 
-          initial={{ opacity: 0, x: -20 }} 
-          animate={{ opacity: 1, x: 0 }} 
+          initial="hidden"
+          animate="visible"
+          variants={simpleAnimation}
           transition={{ duration: 0.5 }}
         >
           <Link href="/" className="text-xl md:text-2xl font-medium text-white/90 hover:text-white transition-colors">
@@ -146,15 +141,14 @@ export default function Home() {
         {/* Desktop Navigation */}
         <motion.div
           className="hidden md:flex items-center gap-8"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
+          initial="hidden"
+          animate="visible"
+          variants={simpleAnimation}
         >
           {["Blog", "About", "Projects"].map((item, i) => (
             <motion.div
               key={item}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+              className="transition-colors hover:text-dusty-rose"
             >
               <Link 
                 href={item === "Blog" ? "/blog" : `#${item.toLowerCase()}`}
@@ -166,19 +160,16 @@ export default function Home() {
                   initial={{ width: "0%" }}
                   whileHover={{ width: "100%", boxShadow: "0 0 10px rgba(255,255,255,0.5)" }}
                 />
-          </Link>
+              </Link>
             </motion.div>
           ))}
-          <ThemeToggle />
         </motion.div>
 
         {/* Mobile Navigation Button */}
         <div className="flex items-center gap-4 md:hidden">
-          <ThemeToggle />
           <motion.button
             className="text-white/80 hover:text-white p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            whileTap={{ scale: 0.95 }}
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </motion.button>
@@ -187,18 +178,16 @@ export default function Home() {
         {/* Mobile Navigation Menu */}
         <motion.div
           className="fixed inset-0 bg-black/90 backdrop-blur-lg z-40 md:hidden"
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: isMenuOpen ? 1 : 0, x: isMenuOpen ? 0 : "100%" }}
-          transition={{ type: "tween", duration: 0.3 }}
+          initial="hidden"
+          animate={isMenuOpen ? "visible" : "hidden"}
+          variants={simpleAnimation}
           style={{ pointerEvents: isMenuOpen ? "auto" : "none" }}
         >
           <div className="flex flex-col items-center justify-center h-full gap-8">
             {["Blog", "About", "Projects"].map((item, i) => (
               <motion.div
                 key={item}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: isMenuOpen ? 1 : 0, y: isMenuOpen ? 0 : 20 }}
-                transition={{ delay: 0.1 + i * 0.1 }}
+                className="transition-colors hover:text-dusty-rose"
               >
                 <Link 
                   href={item === "Blog" ? "/blog" : `#${item.toLowerCase()}`}
@@ -206,15 +195,12 @@ export default function Home() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item}
-          </Link>
+                </Link>
               </motion.div>
             ))}
             
             <motion.div 
               className="flex gap-6 mt-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isMenuOpen ? 1 : 0, y: isMenuOpen ? 0 : 20 }}
-              transition={{ delay: 0.4 }}
             >
               {[
                 { icon: Github, href: "https://github.com/agnibhananda", label: "GitHub" },
@@ -228,8 +214,6 @@ export default function Home() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/80 hover:text-white transition-colors relative group"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <span className="sr-only">{item.label}</span>
                   <item.icon className="w-6 h-6 relative z-10" />
@@ -246,9 +230,9 @@ export default function Home() {
 
       <motion.section 
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
+        initial="hidden"
+        animate="visible"
+        variants={simpleAnimation}
       >
         {/* Background layers with parallax */}
         <motion.div 
@@ -295,10 +279,6 @@ export default function Home() {
                 delay: Math.random() * 2,
                 ease: "easeInOut",
               }}
-              whileHover={{
-                scale: 1.5,
-                opacity: 1,
-              }}
             />
           ))}
         </motion.div>
@@ -309,8 +289,9 @@ export default function Home() {
           style={{ y: textY }}
         >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial="hidden"
+            animate="visible"
+            variants={simpleAnimation}
             transition={{ duration: 0.8 }}
           >
             <AnimatedText 
@@ -319,22 +300,22 @@ export default function Home() {
             />
             <motion.p
               className="mt-6 text-xl text-white/70 font-light"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial="hidden"
+              animate="visible"
               transition={{ delay: 0.4 }}
             >
               <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">Living</span>{' '}
               <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">to</span>{' '}
               <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">tell</span>{' '}
               <span className="inline-block hover:text-white hover:transform hover:translate-y-[-2px] transition-all duration-300">stories</span>
-          </motion.p>
+            </motion.p>
           </motion.div>
 
           {/* Enhanced social links */}
           <motion.div
             className="flex justify-center gap-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial="hidden"
+            animate="visible"
             transition={{ delay: 0.8 }}
           >
             {[
@@ -349,11 +330,6 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/80 hover:text-white transition-colors relative group"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + i * 0.1 }}
               >
                 <span className="sr-only">{item.label}</span>
                 <item.icon className="w-6 h-6 relative z-10" />
@@ -393,7 +369,6 @@ export default function Home() {
           <span className="text-xs md:text-sm font-light tracking-wider">Scroll to explore</span>
           <motion.div
             className="w-5 h-8 md:w-6 md:h-10 border border-white/80 rounded-full flex justify-center relative overflow-hidden"
-            whileHover={{ scale: 1.1 }}
           >
             <motion.div
               className="w-1 h-1 md:w-1.5 md:h-1.5 bg-white/90 rounded-full absolute top-1.5"
@@ -411,24 +386,20 @@ export default function Home() {
       </motion.section>
 
       {/* Seamless transition element */}
-      <div className="h-24 relative z-20 bg-[#B5CAD0] dark:bg-[#2D3C54]" />
+      <div className="h-24 relative z-20 bg-teal-dark" />
 
       <motion.section
         id="about"
-        className="py-16 md:py-32 px-4 md:px-6 relative z-20 bg-[#B5CAD0] dark:bg-[#2D3C54] backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
+        className="py-16 md:py-32 px-4 md:px-6 relative z-20 bg-teal-dark backdrop-blur-sm"
+        initial="hidden"
+        animate="visible"
+        variants={simpleAnimation}
       >
         <motion.div 
           className="absolute inset-0 overflow-hidden pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
         >
           <motion.div 
-            className="absolute -top-20 -left-20 w-96 h-96 bg-[#99b080]/20 rounded-full blur-[100px]"
+            className="absolute -top-20 -left-20 w-96 h-96 bg-teal-light/30 rounded-full blur-[100px]"
             animate={{
               scale: [1, 1.2, 1],
               x: [0, 30, 0],
@@ -441,7 +412,7 @@ export default function Home() {
             }}
           />
           <motion.div 
-            className="absolute top-1/2 -right-20 w-[500px] h-[500px] bg-[#739072]/20 rounded-full blur-[120px]"
+            className="absolute top-1/2 -right-20 w-[500px] h-[500px] bg-accent-blue/30 rounded-full blur-[120px]"
             animate={{
               scale: [1.2, 1, 1.2],
               x: [-30, 0, -30],
@@ -480,12 +451,7 @@ export default function Home() {
 
         <div className="max-w-5xl mx-auto">
           <motion.h2 
-            className="text-4xl mb-16 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif relative group"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            whileHover={{ scale: 1.02 }}
+            className="text-4xl mb-16 text-center text-soft-white font-normal font-serif relative group"
           >
             About Me
             <motion.span
@@ -501,15 +467,12 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
               <motion.div 
                 className="space-y-6 md:col-span-2 max-w-2xl mx-auto"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        initial="hidden"
+        animate="visible"
+        variants={simpleAnimation}
       >
                 <motion.div
                   className="relative aspect-square rounded-2xl overflow-hidden shadow-xl max-w-md mx-auto group"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
                 >
                   <Image
                     src="/photo.jpg"
@@ -522,7 +485,6 @@ export default function Home() {
                   <motion.div 
                     className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
                   />
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100"
@@ -538,20 +500,11 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div 
-                  className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-2xl p-8 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 group"
-                  whileHover={{ y: -5 }}
+                  className="bg-teal-light/60 rounded-2xl p-8 backdrop-blur-sm border border-teal-light/30 shadow-lg hover:shadow-xl transition-all duration-300 group"
                 >
-                  <p className="text-lg leading-relaxed text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-sans relative pl-12 flex items-center">
+                  <p className="text-lg leading-relaxed text-soft-white font-normal font-sans relative pl-12 flex items-center">
                     <motion.div 
                       className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 group-hover:scale-110 transition-transform duration-300"
-                      animate={{
-                        rotate: [0, 10, 0, -10, 0],
-                      }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
                     >
                       <Image
                         src="/fire.png"
@@ -563,8 +516,6 @@ export default function Home() {
                     </motion.div>
                     <motion.span 
                       className="inline-block"
-                      whileHover={{ y: -2 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 10 }}
                     >
                       i sometimes like to build cool stuff.
                     </motion.span>
@@ -577,43 +528,26 @@ export default function Home() {
             <div className="mt-16">
               <div className="flex justify-center gap-4 mb-8">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`px-8 py-3 rounded-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium relative group transition-all duration-300 ${activeTab === 'education' ? 'bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 shadow-lg' : 'hover:bg-[#A4B7C9]/30 dark:hover:bg-[#3D4E6C]/30'}`}
+                  className={`px-8 py-3 rounded-xl text-soft-white font-medium relative group transition-all duration-300 ${activeTab === 'education' ? 'bg-teal-light/70 shadow-lg' : 'hover:bg-teal-light/40'}`}
                   onClick={() => setActiveTab('education')}
                 >
                   <span className="relative z-10">Education</span>
                   {activeTab === 'education' && (
                     <motion.div
-                      className="absolute inset-0 rounded-xl bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 -z-10"
+                      className="absolute inset-0 rounded-xl bg-teal-light/70 -z-10"
                       layoutId="activeTab"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}
-            <motion.div
-                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100"
-                    animate={{
-                      x: ['-200%', '200%'],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
                 </motion.button>
                 <motion.button
-              whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`px-8 py-3 rounded-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium relative group transition-all duration-300 ${activeTab === 'work' ? 'bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 shadow-lg' : 'hover:bg-[#A4B7C9]/30 dark:hover:bg-[#3D4E6C]/30'}`}
+                  className={`px-8 py-3 rounded-xl text-soft-white font-medium relative group transition-all duration-300 ${activeTab === 'work' ? 'bg-teal-light/70 shadow-lg' : 'hover:bg-teal-light/40'}`}
                   onClick={() => setActiveTab('work')}
                 >
                   <span className="relative z-10">Work</span>
                   {activeTab === 'work' && (
                     <motion.div
-                      className="absolute inset-0 rounded-xl bg-[#A4B7C9]/50 dark:bg-[#3D4E6C]/50 -z-10"
+                      className="absolute inset-0 rounded-xl bg-teal-light/70 -z-10"
                       layoutId="activeTab"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}
                 </motion.button>
@@ -623,22 +557,15 @@ export default function Home() {
                 {activeTab === 'education' ? (
                   <motion.div
                     key="education"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-4"
                   >
                     {education.map((entry, index) => (
                       <motion.div
                         key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-xl p-6 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="bg-teal-light/60 rounded-xl p-6 backdrop-blur-sm border-2 border-teal-light/30 shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <div className="flex items-center gap-6">
-                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-[#B5CAD0]/50 dark:bg-[#4A5C7B]/50 flex items-center justify-center shadow-inner">
+                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-teal-dark flex items-center justify-center shadow-inner">
                             <Image
                               src={entry.logo}
                               alt={entry.institution}
@@ -648,15 +575,15 @@ export default function Home() {
                             />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium mb-1 truncate">{entry.institution}</h3>
-                            <p className="text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60 text-sm">{entry.degree} • {entry.period}</p>
+                            <h3 className="text-xl text-teal-light font-medium mb-1 truncate">{entry.institution}</h3>
+                            <p className="text-teal-light text-sm">{entry.degree} • {entry.period}</p>
                           </div>
                         </div>
                         {entry.achievements && entry.achievements.length > 0 && (
-                          <ul className="mt-4 space-y-2 text-[#3D4E6C] dark:text-[#C5D1DC]/90 ml-4">
+                          <ul className="mt-4 space-y-2 text-teal-light font-normal font-sans ml-4">
                             {entry.achievements.map((achievement, i) => (
                               <li key={i} className="flex items-center gap-3">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#3D4E6C] dark:bg-[#C5D1DC] opacity-60" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-teal-light opacity-60" />
                                 <span className="text-sm">{achievement}</span>
                               </li>
                             ))}
@@ -667,16 +594,11 @@ export default function Home() {
                   </motion.div>
                 ) : (
                   <motion.div
-                    key="work"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-4"
                   >
-                    <div className="bg-[#A4B7C9]/30 dark:bg-[#3D4E6C]/30 rounded-xl p-6 backdrop-blur-sm border border-[#C5D1DC]/30 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div className="bg-teal-light/60 rounded-xl p-6 backdrop-blur-sm border-2 border-teal-light/30 shadow-lg hover:shadow-xl transition-all duration-300">
                       <div className="flex items-center gap-6">
-                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-[#B5CAD0]/50 dark:bg-[#4A5C7B]/50 flex items-center justify-center shadow-inner">
+                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-teal-dark flex items-center justify-center shadow-inner">
                           <Image
                             src="/iitm.png"
                             alt="Work"
@@ -686,26 +608,26 @@ export default function Home() {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-xl text-[#3D4E6C] dark:text-[#C5D1DC] font-medium mb-1">Software Engineer</h3>
-                          <p className="text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60 text-sm">Company Name • 2023 - Present</p>
+                          <h3 className="text-xl text-teal-light font-medium mb-1">Software Engineer</h3>
+                          <p className="text-teal-light text-sm">Company Name • 2023 - Present</p>
                         </div>
                       </div>
-                      <ul className="mt-4 space-y-2 text-[#3D4E6C] dark:text-[#C5D1DC]/90 ml-4">
+                      <ul className="mt-4 space-y-2 text-teal-light font-normal font-sans ml-4">
                         <li className="flex items-center gap-3">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#3D4E6C] dark:bg-[#C5D1DC] opacity-60" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-teal-light opacity-60" />
                           <span className="text-sm">Led development of key features</span>
                         </li>
                         <li className="flex items-center gap-3">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#3D4E6C] dark:bg-[#C5D1DC] opacity-60" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-teal-light opacity-60" />
                           <span className="text-sm">Collaborated with cross-functional teams</span>
                         </li>
                         <li className="flex items-center gap-3">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#3D4E6C] dark:bg-[#C5D1DC] opacity-60" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-teal-light opacity-60" />
                           <span className="text-sm">Improved application performance</span>
                         </li>
                       </ul>
                     </div>
-            </motion.div>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>
@@ -721,22 +643,18 @@ export default function Home() {
       </motion.section>
 
       {/* Seamless transition element */}
-      <div className="h-24 relative z-20 bg-[#B5CAD0] dark:bg-[#2D3C54]" />
+      <div className="h-24 relative z-20 bg-teal-dark" />
 
       <motion.section
         id="projects"
-        className="py-16 md:py-32 px-4 md:px-6 relative z-20 bg-[#8B9DAF] dark:bg-[#3D4E6C] backdrop-blur-sm -mt-24"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
+        className="py-16 md:py-32 px-4 md:px-6 relative z-20 bg-teal-dark backdrop-blur-sm -mt-24"
+        initial="hidden"
+        animate="visible"
+        variants={simpleAnimation}
       >
         {/* Enhanced background effects */}
         <motion.div 
           className="absolute inset-0 overflow-hidden pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
         >
           <motion.div 
             className="absolute top-0 left-1/4 w-[700px] h-[700px] rounded-full"
@@ -781,11 +699,7 @@ export default function Home() {
 
         <div className="max-w-4xl mx-auto">
           <motion.h2 
-            className="text-5xl mb-16 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-light tracking-tight relative group"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            className="text-5xl mb-16 text-center text-teal-light font-light tracking-tight relative group"
           >
             Projects
             <motion.span
@@ -801,19 +715,15 @@ export default function Home() {
             {projects.map((project, i) => (
               <motion.div
                 key={project.title}
-                className="group relative bg-[#A4B7C9]/60 dark:bg-[#2D3C54]/50 p-8 rounded-xl border border-[#C5D1DC]/30 dark:border-white/10 backdrop-blur-sm overflow-hidden"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                className="group relative bg-teal-light/60 rounded-xl border-2 border-teal-light/30 backdrop-blur-sm overflow-hidden"
+                initial="hidden"
+                animate="visible"
+                variants={simpleAnimation}
                 transition={{ delay: i * 0.1, duration: 0.6 }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                onMouseEnter={() => setCursorText("View")}
-                onMouseLeave={() => setCursorText("")}
               >
                 {/* Shimmer effect */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
-                  transition={{ duration: 1 }}
                 />
                 
                 {/* Hover glow effect */}
@@ -831,29 +741,24 @@ export default function Home() {
 
                 <div className="relative">
                   <motion.h3 
-                    className="text-2xl mb-3 text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif group-hover:text-[#2D3C54] dark:group-hover:text-white transition-colors flex items-center gap-2"
-                    layout
+                    className="text-2xl mb-3 text-teal-light font-normal font-serif group-hover:text-sunshine transition-colors flex items-center gap-2"
                   >
                     {project.title}
                   </motion.h3>
                   
                   <motion.p 
-                    className="text-[#3D4E6C] dark:text-[#C5D1DC] mb-4 font-normal font-sans"
-                    layout
+                    className="text-teal-light mb-4 font-normal font-sans"
                   >
                     {project.description}
                   </motion.p>
 
                   <motion.div 
                     className="flex flex-wrap gap-2 mb-6"
-                    layout
                   >
                     {project.tech.map((tech) => (
                       <motion.span
                         key={tech}
-                        className="px-2 py-1 text-sm rounded-full bg-[#B5CAD0]/30 dark:bg-white/5 text-[#3D4E6C] dark:text-[#C5D1DC] border border-[#C5D1DC]/30 dark:border-white/10 font-medium font-sans relative group/tech"
-                        whileHover={{ scale: 1.05 }}
-                        layout
+                        className="px-2 py-1 text-sm rounded-full bg-teal-dark text-teal-light border border-teal-light/30 font-medium font-sans relative group/tech"
                       >
                         {tech}
                         <motion.div
@@ -866,7 +771,6 @@ export default function Home() {
 
                   <motion.div 
                     className="flex items-center gap-4"
-                    layout
                   >
                     {[
                       { icon: Github, href: project.github, label: "GitHub" },
@@ -877,9 +781,7 @@ export default function Home() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#3D4E6C] dark:text-[#C5D1DC] hover:text-[#2D3C54] dark:hover:text-white transition-colors relative group/link"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
+                        className="text-teal-light hover:text-sunshine transition-colors relative group/link"
                       >
                         <link.icon className="w-5 h-5" />
                         <motion.span
@@ -913,21 +815,17 @@ export default function Home() {
       </motion.section>
 
       {/* Seamless transition element */}
-      <div className="h-24 relative z-20 bg-[#8B9DAF] dark:bg-[#3D4E6C]" />
+      <div className="h-24 relative z-20 bg-teal-dark" />
 
       <motion.section
         id="contact"
-        className="py-16 md:py-32 px-4 md:px-6 relative z-20 bg-[#A4B7C9] dark:bg-[#4A5C7B] backdrop-blur-sm -mt-24"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
+        className="py-16 md:py-32 px-4 md:px-6 relative z-20 bg-teal-dark backdrop-blur-sm -mt-24"
+        initial="hidden"
+        animate="visible"
+        variants={simpleAnimation}
       >
         <motion.div 
           className="absolute inset-0 overflow-hidden pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
         >
           <motion.div 
             className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[#99b080]/20 rounded-full blur-[140px]"
@@ -959,11 +857,7 @@ export default function Home() {
 
         <div className="max-w-4xl mx-auto">
           <motion.h2 
-            className="text-4xl mb-16 text-center text-[#3D4E6C] dark:text-[#C5D1DC] font-normal font-serif relative"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            className="text-4xl mb-16 text-center text-teal-light font-normal font-serif relative"
           >
             Get in Touch
             <div className="absolute -right-16 top-0 w-32 h-32">
@@ -982,10 +876,6 @@ export default function Home() {
             action="https://formsubmit.co/agnibhananda@gmail.com" 
             method="POST"
             className="space-y-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* FormSubmit.co configuration fields */}
             <input type="hidden" name="_subject" value="New Portfolio Contact!" />
@@ -996,65 +886,47 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <motion.div
                 className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <label className="block text-[#3D4E6C] dark:text-[#C5D1DC] font-medium font-sans">Name</label>
+                <label className="block text-teal-light font-medium font-sans">Name</label>
                 <input
                   type="text"
                   name="name"
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-[#B5CAD0]/20 dark:bg-black/20 border border-[#8B9DAF]/30 dark:border-white/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#8B9DAF]/50 dark:focus:ring-[#C5D1DC]/50 text-[#3D4E6C] dark:text-[#C5D1DC] placeholder-[#3D4E6C]/50 dark:placeholder-[#C5D1DC]/50 font-normal font-sans"
+                  className="w-full px-4 py-3 rounded-lg bg-teal-dark border border-teal-light/30 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-teal-light text-teal-light placeholder-teal-light font-normal font-sans"
                   placeholder="Your name"
                 />
               </motion.div>
               <motion.div
                 className="space-y-2"
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
               >
-                <label className="block text-[#3D4E6C] dark:text-[#C5D1DC] font-medium font-sans">Email</label>
+                <label className="block text-teal-light font-medium font-sans">Email</label>
                 <input
                   type="email"
                   name="email"
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-[#B5CAD0]/20 dark:bg-black/20 border border-[#8B9DAF]/30 dark:border-white/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#8B9DAF]/50 dark:focus:ring-[#C5D1DC]/50 text-[#3D4E6C] dark:text-[#C5D1DC] placeholder-[#3D4E6C]/50 dark:placeholder-[#C5D1DC]/50 font-normal font-sans"
+                  className="w-full px-4 py-3 rounded-lg bg-teal-dark border border-teal-light/30 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-teal-light text-teal-light placeholder-teal-light font-normal font-sans"
                   placeholder="your@email.com"
                 />
               </motion.div>
             </div>
             <motion.div
               className="space-y-2"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
             >
-              <label className="block text-[#3D4E6C] dark:text-[#C5D1DC] font-medium font-sans">Message</label>
+              <label className="block text-teal-light font-medium font-sans">Message</label>
               <textarea
                 name="message"
                 required
                 rows={6}
-                className="w-full px-4 py-3 rounded-lg bg-[#B5CAD0]/20 dark:bg-black/20 border border-[#8B9DAF]/30 dark:border-white/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#8B9DAF]/50 dark:focus:ring-[#C5D1DC]/50 text-[#3D4E6C] dark:text-[#C5D1DC] placeholder-[#3D4E6C]/50 dark:placeholder-[#C5D1DC]/50 resize-none font-normal font-sans"
+                className="w-full px-4 py-3 rounded-lg bg-teal-dark border border-teal-light/30 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-teal-light text-teal-light placeholder-teal-light resize-none font-normal font-sans"
                 placeholder="Your message..."
               />
             </motion.div>
             <motion.div
               className="flex justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.6 }}
             >
               <motion.button
                 type="submit"
-                className="px-8 py-3 rounded-lg bg-[#8B9DAF] dark:bg-[#5C6F8A] text-[#2D3C54] dark:text-white font-normal font-sans text-lg hover:bg-[#B5CAD0] dark:hover:bg-[#4A5C7B] transition-colors relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="px-8 py-3 rounded-lg bg-teal-light text-teal-dark font-normal font-sans text-lg hover:bg-teal-dark transition-colors relative group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="relative z-10">Send Message</span>
               </motion.button>
@@ -1078,14 +950,11 @@ export default function Home() {
       </motion.section>
 
       {/* Seamless transition element */}
-      <div className="h-24 relative z-20 bg-[#A4B7C9] dark:bg-[#4A5C7B]" />
+      <div className="h-24 relative z-20 bg-teal-dark" />
 
-      <footer className="py-16 px-6 text-center relative z-20 bg-[#B5CAD0] dark:bg-[#2D3C54] backdrop-blur-sm -mt-24">
+      <footer className="py-16 px-6 text-center relative z-20 bg-teal-dark backdrop-blur-sm -mt-24">
         <motion.div
           className="flex justify-center gap-3 mb-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
         >
           {[0, 1, 2].map((i) => (
             <motion.div
@@ -1106,8 +975,7 @@ export default function Home() {
           ))}
         </motion.div>
         <motion.p 
-          className="text-[#3D4E6C]/80 dark:text-[#C5D1DC]/80 font-normal font-sans"
-          whileHover={{ scale: 1.05 }}
+          className="text-teal-light/80 font-normal font-sans"
         >
           © {new Date().getFullYear()} Agnibha Nanda
         </motion.p>
@@ -1120,7 +988,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className="fixed bottom-8 right-8 z-50 bg-[#8B9DAF] dark:bg-[#3D4E6C] text-[#2D3C54] dark:text-white px-6 py-4 rounded-lg shadow-lg border border-[#C5D1DC]/30 dark:border-white/10 backdrop-blur-sm"
+            className="fixed bottom-8 right-8 z-50 bg-teal-light text-teal-dark px-6 py-4 rounded-lg shadow-lg border border-teal-light/30 backdrop-blur-sm"
           >
             <div className="flex items-center gap-3">
               <motion.div

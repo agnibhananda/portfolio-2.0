@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 import { Cormorant_Garamond, Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
-import type React from "react" // Import React
+import type React from "react"
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -21,6 +20,8 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Agnibha Nanda - Portfolio",
   description: "Computer Science Student",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  themeColor: "#4A9396",
 }
 
 export default function RootLayout({
@@ -30,15 +31,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        <link rel="preload" as="image" href="/profile.jpg" />
+      </head>
       <body className={`${cormorant.variable} ${inter.variable}`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   )

@@ -16,7 +16,7 @@ export function AnimatedHeader({ title, subtitle }: AnimatedHeaderProps) {
       transition={{ duration: 0.6 }}
     >
       <motion.h1 
-        className="text-4xl md:text-5xl font-light text-[#3D4E6C] dark:text-[#C5D1DC] mb-4"
+        className="text-4xl md:text-5xl font-light text-teal-light mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
@@ -26,7 +26,7 @@ export function AnimatedHeader({ title, subtitle }: AnimatedHeaderProps) {
       
       {subtitle && (
         <motion.p
-          className="text-[#3D4E6C]/60 dark:text-[#C5D1DC]/60 text-lg"
+          className="text-teal-light/60 text-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}

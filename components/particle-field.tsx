@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
 interface Particle {
   x: number
@@ -17,9 +16,23 @@ export function ParticleField() {
   const particlesRef = useRef<Particle[]>([])
   const mouseRef = useRef({ x: 0, y: 0 })
   const rafRef = useRef<number>()
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+
+    // Check if it's a mobile device or small screen
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 
+        'ontouchstart' in window || 
+        navigator.maxTouchPoints > 0)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    // Don't continue with particle setup if it's a mobile device
+    if (isMobile) return
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -35,14 +48,16 @@ export function ParticleField() {
 
     const createParticles = () => {
       particlesRef.current = []
-      for (let i = 0; i < 100; i++) {
+      // Reduce number of particles for better performance
+      const particleCount = 50
+      for (let i = 0; i < particleCount; i++) {
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          size: Math.random() * 2 + 1,
-          color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2})`
+          vx: (Math.random() - 0.5) * 0.3, // Slower movement
+          vy: (Math.random() - 0.5) * 0.3, // Slower movement
+          size: Math.random() * 1.5 + 0.5, // Smaller particles
+          color: `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})` // More transparent
         })
       }
     }
@@ -55,14 +70,14 @@ export function ParticleField() {
         particle.x += particle.vx
         particle.y += particle.vy
 
-        // Mouse interaction
+        // Simplified mouse interaction - only apply to particles close to mouse
         const dx = mouseRef.current.x - particle.x
         const dy = mouseRef.current.y - particle.y
         const distance = Math.sqrt(dx * dx + dy * dy)
-        if (distance < 100) {
+        if (distance < 80) { // Reduced interaction radius
           const angle = Math.atan2(dy, dx)
-          particle.vx -= Math.cos(angle) * 0.2
-          particle.vy -= Math.sin(angle) * 0.2
+          particle.vx -= Math.cos(angle) * 0.1 // Reduced effect
+          particle.vy -= Math.sin(angle) * 0.1 // Reduced effect
         }
 
         // Boundaries
@@ -74,22 +89,28 @@ export function ParticleField() {
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
         ctx.fillStyle = particle.color
         ctx.fill()
+      })
 
-        // Draw connections
-        particlesRef.current.forEach(otherParticle => {
+      // Draw connections less frequently - only between nearby particles
+      for (let i = 0; i < particlesRef.current.length; i++) {
+        const particle = particlesRef.current[i]
+        
+        // Only check every other particle to reduce calculations
+        for (let j = i + 1; j < particlesRef.current.length; j += 2) {
+          const otherParticle = particlesRef.current[j]
           const dx = particle.x - otherParticle.x
           const dy = particle.y - otherParticle.y
           const distance = Math.sqrt(dx * dx + dy * dy)
 
-          if (distance < 100) {
+          if (distance < 80) { // Reduced connection distance
             ctx.beginPath()
             ctx.moveTo(particle.x, particle.y)
             ctx.lineTo(otherParticle.x, otherParticle.y)
-            ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 * (1 - distance / 100)})`
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * (1 - distance / 80)})` // More transparent
             ctx.stroke()
           }
-        })
-      })
+        }
+      }
 
       rafRef.current = requestAnimationFrame(updateParticles)
     }
@@ -114,11 +135,15 @@ export function ParticleField() {
     return () => {
       if (typeof window !== 'undefined') {
         window.removeEventListener('resize', resizeCanvas)
+        window.removeEventListener('resize', checkMobile)
         canvas.removeEventListener('mousemove', handleMouseMove)
       }
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [])
+  }, [isMobile])
+
+  // Don't render on mobile
+  if (isMobile) return null
 
   return (
     <canvas

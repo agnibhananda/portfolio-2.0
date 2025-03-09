@@ -4,41 +4,85 @@
 
 @layer base {
   :root {
-    --cream: 36 33% 97%;
-    --sage: 150 15% 86%;
-    --dusty-rose: 4 25% 82%;
-    --slate: 215 25% 27%;
-    --gold: 35 40% 50%;
+    --teal-dark: 187 42% 38%;      /* #4A9396 - Deep teal */
+    --teal-medium: 174 42% 51%;    /* #4EBCB9 - Medium teal */
+    --teal-light: 180 56% 73%;     /* #8ADBDB - Light teal */
+    --blue-gray: 210 29% 29%;      /* #34455E - Deep blue-gray */
+    --soft-white: 180 20% 92%;     /* #E6EDED - Soft white with teal tint */
+    --accent-blue: 199 65% 72%;    /* #7CCEF5 - Accent blue */
 
-    --background: var(--cream);
-    --foreground: var(--slate);
+    --background: var(--teal-dark);
+    --foreground: var(--soft-white);
 
-    --card: var(--cream);
-    --card-foreground: var(--slate);
+    --card: var(--blue-gray);
+    --card-foreground: var(--soft-white);
 
-    --popover: var(--cream);
-    --popover-foreground: var(--slate);
+    --popover: var(--blue-gray);
+    --popover-foreground: var(--soft-white);
 
-    --primary: var(--slate);
-    --primary-foreground: var(--cream);
+    --primary: var(--teal-light);
+    --primary-foreground: var(--blue-gray);
 
-    --secondary: var(--sage);
-    --secondary-foreground: var(--slate);
+    --secondary: var(--accent-blue);
+    --secondary-foreground: var(--blue-gray);
 
-    --muted: var(--sage);
-    --muted-foreground: var(--slate);
+    --muted: var(--teal-medium);
+    --muted-foreground: var(--soft-white);
 
-    --accent: var(--dusty-rose);
-    --accent-foreground: var(--slate);
+    --accent: var(--accent-blue);
+    --accent-foreground: var(--blue-gray);
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: var(--cream);
+    --destructive-foreground: var(--soft-white);
 
-    --border: var(--slate);
-    --input: var(--slate);
-    --ring: var(--slate);
+    --border: var(--teal-light);
+    --input: var(--teal-light);
+    --ring: var(--teal-light);
 
-    --radius: 0.5rem;
+    --chart-1: 180 56% 73%;
+    --chart-2: 174 42% 51%;
+    --chart-3: 199 65% 72%;
+    --chart-4: 187 42% 38%;
+    --chart-5: 210 29% 29%;
+
+    --radius: 0.75rem;
+  }
+
+  /* Remove light mode theme and keep only dark theme */
+  .dark {
+    --background: var(--teal-dark);
+    --foreground: var(--soft-white);
+
+    --card: var(--blue-gray);
+    --card-foreground: var(--soft-white);
+
+    --popover: var(--blue-gray);
+    --popover-foreground: var(--soft-white);
+
+    --primary: var(--teal-light);
+    --primary-foreground: var(--blue-gray);
+
+    --secondary: var(--accent-blue);
+    --secondary-foreground: var(--blue-gray);
+
+    --muted: var(--teal-medium);
+    --muted-foreground: var(--soft-white);
+
+    --accent: var(--accent-blue);
+    --accent-foreground: var(--blue-gray);
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: var(--soft-white);
+
+    --border: var(--teal-light);
+    --input: var(--teal-light);
+    --ring: var(--teal-light);
+
+    --chart-1: 180 56% 83%;
+    --chart-2: 174 42% 61%;
+    --chart-3: 199 65% 82%;
+    --chart-4: 187 42% 48%;
+    --chart-5: 210 29% 39%;
   }
 }
 
@@ -48,8 +92,8 @@
 
 .decorative-border::before,
 .decorative-border::after {
-  content: "✧";
-  @apply absolute text-gold opacity-80;
+  content: "✿";
+  @apply absolute text-accent opacity-80;
 }
 
 .decorative-border::before {

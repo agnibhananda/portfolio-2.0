@@ -10,8 +10,23 @@ export function CustomCursor() {
   const cursorXSpring = useSpring(cursorX, springConfig)
   const cursorYSpring = useSpring(cursorY, springConfig)
   const [isHovering, setIsHovering] = useState(false)
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
 
   useEffect(() => {
+    // Check if device is touch-enabled
+    const checkTouchDevice = () => {
+      setIsTouchDevice(
+        'ontouchstart' in window || 
+        navigator.maxTouchPoints > 0 ||
+        (navigator as any).msMaxTouchPoints > 0
+      )
+    }
+    
+    checkTouchDevice()
+    
+    // Don't continue with cursor setup if it's a touch device
+    if (isTouchDevice) return
+    
     const updateMousePosition = (e: MouseEvent) => {
       cursorX.set(e.clientX - 8)
       cursorY.set(e.clientY - 8)
@@ -32,7 +47,10 @@ export function CustomCursor() {
       window.removeEventListener('mousemove', updateMousePosition)
       window.removeEventListener('mouseover', updateHoverState)
     }
-  }, [cursorX, cursorY, isHovering])
+  }, [cursorX, cursorY, isHovering, isTouchDevice])
+
+  // Don't render custom cursor on touch devices
+  if (isTouchDevice) return null
 
   return (
     <>
